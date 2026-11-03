@@ -120,7 +120,10 @@
   art = LR.mountArt($('.gl'), { E: E, fps: LR.coarse ? 40 : 60, safe: true });
   plate = LR.mountArt($('.tk-plate canvas'), { E: E, fps: 24, prog: .62, seed: 7, timeOffset: 30, dprMax: 1.25 });
   var ticket = $('.tk');
-  function measure() { stage.style.setProperty('--tk-h', ticket.offsetHeight + 'px'); }
+  /* "Scroll to enter the room" is a nicety: whenever the window is short enough that it would touch the tagline, drop it instead of overlapping the text */
+  function fitCue() { var c = $('.cue'), t = $('.tagline'); if (!c || !t) return; c.classList.remove('cue--off'); var a = c.getBoundingClientRect(), b = t.getBoundingClientRect(); if (a.width && a.top < b.bottom + 18) c.classList.add('cue--off'); }
+  function measure() { stage.style.setProperty('--tk-h', ticket.offsetHeight + 'px'); fitCue(); }
+  setTimeout(function () { if (!dead) fitCue(); }, 1700);                                   // again once the intro motion has settled
   measure(); onWin('resize', measure); if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (!dead) measure(); });
   LR.tilt(ticket, 6); LR.magnet($('#reserve'), .18); LR.magnet($('.bar-cta'), .25);
 

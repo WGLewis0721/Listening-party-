@@ -1,0 +1,82 @@
+{
+  "base_url": "https://wglewis0721.github.io/Listening-party-",
+  "site_name": "Listening Room",
+  "contact_url": "https://github.com/WGLewis0721/Listening-party-/issues",
+  "policy_url": "https://github.com/WGLewis0721/Listening-party-/blob/main/SECURITY.md",
+  "share_image": "og-listening-room.png",
+  "connect_src_extra": [],
+  "security_txt_days": 180,
+  "pages": {
+    "/": {
+      "index": true,
+      "og_title": "Listening Room: a website for a monthly DJ night",
+      "description": "A scroll-driven website for a monthly DJ listening party in Montgomery, AL, with a ticket card in the DJ's own style. Concept demo with a made-up DJ."
+    },
+    "/concepts/": {
+      "index": true,
+      "image": "og-concepts.png",
+      "og_title": "Listening Room: five looks, pick your favorite",
+      "description": "Five looks for the same monthly listening party. Scroll each one, generate its ticket card, and pick a favorite. Concept demo with made-up DJs."
+    },
+    "/design/brand-boards.html": {
+      "index": true,
+      "description": "The brand system behind Listening Room: one frame, a new skin for every DJ, live contrast checks, type and motion."
+    },
+    "/design/wireframes.html": {
+      "index": true,
+      "description": "Wireframes for the Listening Room funnel: the desktop and phone beats, the pay page and the ticket card."
+    },
+    "/design/RESEARCH.html": {
+      "index": true,
+      "description": "Research notes: how music and event sites are built, and the type, motion and layout decisions that came out of it."
+    },
+    "/design/BRAND-SYSTEM.html": {
+      "index": true,
+      "description": "How to produce a new Listening Room edition: what stays the same, what changes for each DJ, and the guardrails."
+    },
+    "/design/REQUIREMENTS-MAP.html": {
+      "index": true,
+      "description": "Every requirement for the Listening Room site, mapped to the interface decision and the design principle behind it."
+    },
+    "/design/UX-AUDIT.html": {
+      "index": true,
+      "description": "Measured results of the Listening Room audit: contrast, tap targets, layout, motion, and what is still untested."
+    },
+    "/design/SECURE-CARD-FLOW.html": {
+      "index": true,
+      "description": "How a ticket buyer gets a card without the address leaking: the flow, the threat model, and what is tested."
+    },
+    "/privacy.html": {
+      "index": true,
+      "description": "What this demo site stores in your browser, what it never collects, and what would change if it sold real tickets."
+    },
+    "/terms.html": {
+      "index": true,
+      "description": "Plain terms for the Listening Room demo site."
+    },
+    "/accessibility.html": {
+      "index": true,
+      "description": "What has been tested for accessibility on the Listening Room demo, and what has not."
+    },
+    "/sitemap.html": {
+      "index": true,
+      "description": "Every page on the Listening Room demo site."
+    },
+    "/pay.html": {
+      "index": false,
+      "description": "The Listening Room demo checkout: pick seats, pretend to pay, and see the ticket card unlock. No real payment is taken."
+    },
+    "/door.html": {
+      "index": false,
+      "description": "The Listening Room door tool: scan a guest's code or find their name. Demo only."
+    },
+    "/concepts/review.html": {
+      "index": false,
+      "description": "One Listening Room concept, full screen, with a switcher to flip between the five looks at the same scroll position."
+    },
+    "/concepts/gallery.html": {
+      "index": false,
+      "description": "A simple list of the five Listening Room concept pages. Demo with made-up DJs."
+    }
+  }
+}

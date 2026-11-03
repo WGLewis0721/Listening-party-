@@ -1,0 +1,7 @@
+# Keeps the GitHub Actions in the deploy workflow up to date. The site itself has no package dependencies.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

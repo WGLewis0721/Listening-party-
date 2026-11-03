@@ -84,6 +84,7 @@ button{font:inherit;color:inherit}
 @keyframes sheen{from{background-position:0% 50%}to{background-position:100% 50%}}
 .tagline{margin:clamp(14px,2.6vh,28px) 0 0;max-width:34ch;font-size:clamp(1.05rem,1.55vw,1.4rem);line-height:1.45;color:color-mix(in srgb,var(--muted) 45%,var(--ink));text-shadow:0 0 20px var(--bg),0 0 4px color-mix(in srgb,var(--bg) 75%,transparent)}
 .cue{left:var(--pad);bottom:calc(var(--player-h) + 20px);display:flex;align-items:center;gap:12px;font:600 12px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.cue.cue--off{display:none}
 .cue::before{content:"";width:1px;height:44px;background:linear-gradient(var(--acc),transparent);animation:drip 2.2s var(--ease) infinite;transform-origin:top}
 /* intro for the arrive extras is CSS (never GSAP) so it cannot fight the scroll-scrub tween on the same properties */
 .lr[data-mode="scrub"] .name-wrap .eyebrow{animation:rise .9s var(--ease) .45s backwards}
