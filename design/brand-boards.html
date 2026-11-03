@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Listening Room · Brand system and concept boards</title>
+<link rel="stylesheet" href="../site/assets/css/fonts.css">
+<link rel="stylesheet" href="../site/assets/css/lr.css">
+<style>
+:root{--pad:clamp(20px,4vw,64px)}
+body{background:#0a0a0b;color:#f3f1ec;line-height:1.55}
+.wrap{max-width:1320px;margin:0 auto;padding:0 var(--pad)}
+.top{padding:clamp(48px,9vw,120px) 0 clamp(32px,5vw,64px);border-bottom:1px solid rgba(255,255,255,.12)}
+.top h1{margin:10px 0 0;font:400 clamp(2.6rem,7vw,6rem)/.95 'Instrument Serif',serif;letter-spacing:-.02em}
+.top p.lede{max-width:62ch;color:#b9b4a8;font-size:1.12rem;margin:20px 0 0}
+.kick{font:700 12px/1.3 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:#c8a45c}
+.sys{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,40px);padding:clamp(32px,5vw,64px) 0}
+.panel{padding:clamp(20px,2.4vw,32px);border-radius:20px;background:#111113;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.panel h2{margin:6px 0 14px;font:400 2rem/1.1 'Instrument Serif',serif}
+.panel ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.panel li{padding-left:18px;position:relative;color:#d9d5ca;font-size:.98rem}
+.panel li::before{content:"";position:absolute;left:0;top:.72em;width:10px;height:1px;background:#c8a45c}
+.panel li b{color:#fff}
+.recipe{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:clamp(32px,5vw,64px)}
+.recipe .panel{padding:20px}
+.recipe h3{margin:4px 0 8px;font:700 1rem/1.3 var(--body)}
+.recipe p{margin:0;color:#b9b4a8;font-size:.93rem}
+.rules{padding:0 0 clamp(32px,5vw,64px)}
+.rules table{width:100%;border-collapse:collapse;font-size:.95rem}
+.rules th,.rules td{padding:12px 14px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1);vertical-align:top}
+.rules th{font:700 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#c8a45c}
+.rules td:first-child{white-space:nowrap}
+.compare{overflow-x:auto}
+.compare table{min-width:760px}
+
+/* board */
+.board{position:relative;color:var(--ink);background:var(--bg);padding:clamp(40px,6vw,88px) 0;border-top:1px solid rgba(255,255,255,.14)}
+.board .bh{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 24px}
+.board .bh h2{margin:0;font:400 clamp(1.6rem,3vw,2.4rem)/1.1 var(--body);font-weight:700;letter-spacing:-.01em}
+.board .fam{font:600 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.grid{margin-top:28px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(14px,2vw,28px)}
+.left{grid-column:1/span 8;display:grid;gap:clamp(14px,2vw,28px);align-content:start}
+.right{grid-column:9/span 4;display:grid;gap:clamp(14px,2vw,22px);align-content:start}
+.motif{position:relative;aspect-ratio:16/9;border-radius:20px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line);background:var(--bg)}
+.motif canvas{position:absolute;inset:0;width:100%;height:100%}
+.motif .fx{position:absolute}
+.motif .lock{position:absolute;inset:0;padding:clamp(16px,3vw,40px);display:flex;flex-direction:column;justify-content:space-between;z-index:3}
+.motif .lock .eyebrow{margin:0}
+.board .name{font-size:clamp(2.4rem,6.4vw,6.4rem);transform:none!important;opacity:1!important}
+.board .tag{margin:12px 0 0;max-width:34ch;color:var(--muted);font-size:clamp(.9rem,1.3vw,1.1rem)}
+.col{grid-column:9/span 4;display:grid;gap:clamp(14px,2vw,22px);align-content:start}
+.card{padding:clamp(16px,2vw,24px);border-radius:18px;background:color-mix(in srgb,var(--surface) 80%,transparent);box-shadow:inset 0 0 0 1px var(--line)}
+.notes p.m,.card p.m{color:var(--muted)}
+.card h3{margin:0 0 12px;font:600 12px/1.3 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.sw{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.sw div{border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+.sw i{display:block;height:46px}
+.sw p{margin:0;padding:8px 10px;font:600 11px/1.35 var(--mono);letter-spacing:.04em;color:var(--ink);background:color-mix(in srgb,var(--bg) 70%,transparent)}
+.sw p b{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.sw p em{font-style:normal;color:var(--muted)}
+.ok{color:#5ee08f}.low{color:#ffb35e}
+.spec{display:grid;gap:12px}
+.spec .row{display:grid;grid-template-columns:70px 1fr;gap:14px;align-items:baseline;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.spec .row:last-child{border:0;padding-bottom:0}
+.spec small{font:600 11px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.spec .d{font-family:var(--display);font-weight:var(--name-weight);font-style:var(--name-style);text-transform:var(--name-transform);font-size:2.1rem;line-height:1;letter-spacing:var(--name-track)}
+.spec .b{font:500 1rem/1.4 var(--body)}
+.spec .m{font:600 .85rem/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.tix{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,28px)}
+.tix figure{margin:0}
+.tix figcaption{margin:0 0 10px;font:600 12px/1.3 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tix .tk{max-width:none;transform:none!important}
+.tix .tk-plate{height:150px}
+.tix .btn{pointer-events:none}
+.notes{grid-column:9/span 4;display:grid;gap:clamp(14px,2vw,22px);align-content:start}
+.notes ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.notes li{position:relative;padding-left:16px;font-size:.93rem;color:var(--ink)}
+.notes li::before{content:"";position:absolute;left:0;top:.68em;width:8px;height:1px;background:var(--acc)}
+.notes .dont li::before{background:#ff8f8f}
+.notes p{margin:0;font-size:.95rem;color:var(--ink)}
+.notes p.m{color:var(--muted)}
+.ref{border-style:dashed}
+.ref h3{color:var(--acc)}
+.foot{margin:0}
+@media (max-width:980px){
+  .sys{grid-template-columns:1fr}.recipe{grid-template-columns:1fr 1fr}
+  .left,.right{grid-column:1/-1}
+  .tix{grid-template-columns:1fr}
+}
+@media (max-width:560px){.recipe{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <p class="kick">Listening Room · brand system</p>
+  <h1>One frame.<br>A different skin every month.</h1>
+  <p class="lede">Every edition ships the same pinned hero, the same night-long scrubber and the same ticket anatomy, so the quality is the same every week. Only the skin changes: motif, display face, five colors, motion feel and voice. Everything below is rendered from the real edition files, so these boards cannot drift from the site.</p>
+</div></header>
+
+<div class="wrap">
+  <section class="sys" aria-label="Frame and skin">
+    <div class="panel"><p class="kick">Frame · never changes</p><h2>What makes it consistent</h2><ul>
+      <li><b>Hero only.</b> One pinned stage, five beats: Arrive, Sound, Set, Room, Ticket.</li>
+      <li><b>The night scrubber.</b> A bottom bar with chapter ticks and a clock that runs from doors to close as you scroll.</li>
+      <li><b>One primary action.</b> The top-bar button yields to the ticket button on the last beat.</li>
+      <li><b>Ticket anatomy.</b> Plate, head, title, meta, lines, location, QR, perforation, foot, always in that order.</li>
+      <li><b>Type roles.</b> Display is the skin; body is Manrope; labels are JetBrains Mono at 12px or larger.</li>
+      <li><b>Data sits on glass.</b> Charts and spec lists get a blurred panel so any motif stays legible.</li>
+      <li><b>Motion rules.</b> Scroll-scrubbed, intro under 2 seconds, nothing flashes, Reduce Motion becomes a stacked static page.</li>
+      <li><b>Secret address.</b> Blurred and locked on the hero, decrypted on the card after payment.</li>
+    </ul></div>
+    <div class="panel"><p class="kick">Skin · changes per DJ</p><h2>What makes it theirs</h2><ul>
+      <li><b>Motif.</b> One of five shaders today (spectra, tunnel, sunburst, mercury, spotlight). New ones follow the same uniform API.</li>
+      <li><b>Display face.</b> Five approved so far, plus a title treatment: case, weight, foil or chrome fill.</li>
+      <li><b>Palette.</b> Five tokens plus surface and on-accent, each checked for contrast (rules below).</li>
+      <li><b>Motion feel.</b> An ease curve and an intro stagger: slow and soft, or snappy and hard.</li>
+      <li><b>Voice.</b> The tagline, the one-sentence statement, and how the set slots are named (film acts, funk hours, anthems).</li>
+      <li><b>Texture.</b> Grain amount and how strongly the left side is dimmed for text.</li>
+    </ul></div>
+  </section>
+
+  <section class="recipe" aria-label="Skin recipe">
+    <div class="panel"><p class="kick">Step 1</p><h3>Pick the sound</h3><p>Name the DJ and write five set slots with an energy value from 0 to 1. That drives the arc chart and the clock.</p></div>
+    <div class="panel"><p class="kick">Step 2</p><h3>Pick a motif</h3><p>Match the room: dots for slow and quiet, tunnel for synths, sun for warmth, metal for polish, spotlight for cinema.</p></div>
+    <div class="panel"><p class="kick">Step 3</p><h3>Pick five colors</h3><p>Void, ink, muted, one accent, one signal. The contrast rules below must show green on every row.</p></div>
+    <div class="panel"><p class="kick">Step 4</p><h3>Check and ship</h3><p>Screenshot 390 and 1440 wide, check the unlock on the pay page, then deploy. About fifteen minutes once the copy exists.</p></div>
+  </section>
+
+  <section class="rules" aria-label="Guardrails"><div class="panel"><p class="kick">Guardrails · every skin must pass</p><h2>Contrast and legibility rules</h2>
+    <div class="compare"><table><thead><tr><th>Pair</th><th>Minimum</th><th>Why</th></tr></thead><tbody>
+      <tr><td>Ink on void</td><td>7 : 1</td><td>Headlines and body copy sit directly on art.</td></tr>
+      <tr><td>Muted on void</td><td>4.5 : 1</td><td>Captions, set notes and labels. Never smaller than 12px.</td></tr>
+      <tr><td>Accent on void</td><td>4.5 : 1</td><td>Eyebrows, times and chart lines.</td></tr>
+      <tr><td>On-accent on accent</td><td>4.5 : 1</td><td>The one filled button label.</td></tr>
+      <tr><td>Tap targets</td><td>44 px</td><td>Buttons, chapter ticks, steppers.</td></tr>
+    </tbody></table></div></div></section>
+</div>
+
+<main id="boards"></main>
+
+<script src="../site/edition.js"></script><script>(window.EDS=window.EDS||[]).push(window.LR_EDITION)</script>
+<script src="../concepts/02-led-stage/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
+<script src="../concepts/03-golden-hour/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
+<script src="../concepts/04-chrome-disco/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
+<script src="../concepts/05-brass-night/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
+<!--PRIVATE_REFS-->
+<script>window.LR_NO_THEME=true;</script>
+<script src="../site/assets/js/vendor/qrcode.js"></script>
+<script src="../site/assets/js/lr-shaders.js"></script>
+<script src="../site/assets/js/lr-core.js"></script>
+<script>
+(function(){
+  var NOTES={
+    'quiet-spectra':{n:'Concept 01 · Quiet Spectra',fam:'Slow house · vinyl edits · deep listening',
+      motion:'A field of small marks breathes around one vertical axis. A single tempered-metal playhead travels down the field as you scroll.',
+      ease:'expo.out · slow, unhurried', voice:'Quiet and exact. Short sentences. No hype words.',
+      does:['Hold to ivory, void and one metal','Keep one irregular column, never two','Let the field stay quiet behind the type'],
+      donts:['No gradient on type','No second accent hue','No more than one filled button']},
+    'led-stage':{n:'Concept 02 · LED Stage',fam:'Progressive electro · analog synth · long builds',
+      motion:'Scroll is camera depth. You travel down a corridor of LED rings that pulse on a slow beat, magenta used rarely.',
+      ease:'power4.out · fast attack, hard stop', voice:'Technical and cold. Specific numbers: BPM, minutes, build length.',
+      does:['Keep rings thin and constant width','Use the signal color on one ring in ten','Keep the title in condensed caps'],
+      donts:['No rounded display faces','No glow wider than the line','No second grid on the page']},
+    'golden-hour':{n:'Concept 03 · Golden Hour',fam:'Hip-hop · R&B · soul samples · sing-back',
+      motion:'The sun rises as you scroll, from half-set to high. Gold dust drifts up. The name is set in foil.',
+      ease:'expo.out · generous, celebratory', voice:'Warm and affirming. Toasts, family favorites, the room singing back.',
+      does:['Use foil only on the name','Keep the sun right of the type on wide screens','Name set slots like moments, not tracks'],
+      donts:['No foil on body text','No bottle-service language','No more than one sun']},
+    'chrome-disco':{n:'Concept 04 · Chrome Disco',fam:'Disco edits · funk · French-touch house',
+      motion:'Liquid metal on the open side of the screen, dark behind the type. It warps further the more you scroll.',
+      ease:'power4.out · crisp, machine-cut', voice:'Polished and playful. Precision as a joke: hand-built, played like a machine.',
+      does:['Keep the left side dark for type','Use amber as the single warm hit','Scale body headings down: the display face is wide'],
+      donts:['No colored chrome tints','No second metal','No wide display face below 48px']},
+    'brass-night':{n:'Concept 05 · Brass and Night',fam:'House · UK garage · afro-house · late set',
+      motion:'A spotlight finds the record. As you scroll the beam narrows and drifts toward your ticket.',
+      ease:'power3.out · slow settle, cinematic', voice:'Cinematic. The set is a film: Overture, Second act, Credits.',
+      does:['Keep the beam off the type column','Use heavy grain and a deep vignette','Italic display, light weight, large'],
+      donts:['No second light source','No color other than brass and oxblood','No bright floor in the plate']}
+  };
+  function lum(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(function(x){return x+x}).join('');var n=parseInt(h,16),c=[n>>16&255,n>>8&255,n&255].map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+  function ratio(a,b){var A=lum(a),B=lum(b);return (Math.max(A,B)+.05)/(Math.min(A,B)+.05)}
+  function esc(s){return LR.esc(s)}
+  var host=document.getElementById('boards'), refs=window.LR_REFS||{};
+
+  window.EDS.forEach(function(E,idx){
+    var t=E.theme,k=t.tokens,N=NOTES[t.id]||{},v=LR.themeVars(E),css=Object.keys(v).map(function(n){return n+':'+v[n]}).join(';');
+    var minRules=[['Ink','ink','bg',7],['Muted','muted','bg',4.5],['Accent','acc','bg',4.5],['Signal','acc2','bg',3]];
+    function sw(label,tok,bgTok,min){var c=ratio(k[tok],k[bgTok]),pass=c>=min;return '<div><i style="background:'+k[tok]+'"></i><p><b>'+label+'</b><em>'+k[tok]+'</em><br>'+(bgTok?'<span class="'+(pass?'ok':'low')+'">'+c.toFixed(1)+':1 '+(pass?'pass':'check')+'</span>':'')+'</p></div>'}
+    var swatches=[ sw('Void','bg','bg',0).replace(/<br>.*?<\/p>/,'</p>'), sw('Surface','surface','bg',0).replace(/<br>.*?<\/p>/,'</p>') ]
+      .concat(minRules.map(function(r){return sw(r[0],r[1],r[2],r[3])}))
+      .concat([ (function(){var c=ratio(k.accOn,k.acc),p=c>=4.5;return '<div><i style="background:'+k.accOn+'"></i><p><b>On-accent</b><em>'+k.accOn+'</em><br><span class="'+(p?'ok':'low')+'">'+c.toFixed(1)+':1 on accent</span></p></div>'})() ]).join('');
+    var ref=refs[t.id], refHTML=ref?('<div class="card ref"><h3>Reference sound · private</h3><p><b>'+esc(ref.artist)+'</b></p><p class="m">'+esc(ref.vibe)+'</p><p style="margin-top:10px"><b>Borrowed:</b> '+esc(ref.borrowed)+'</p><p style="margin-top:6px"><b>Left alone:</b> '+esc(ref.avoided)+'</p></div>'):'';
+    var lines=(E.dj.lines||[E.dj.name]).map(function(l){return '<span class="ln"><span>'+esc(l)+'</span></span>'}).join('');
+    var s=document.createElement('section');s.className='board';s.setAttribute('style',css);s.id=t.id;
+    s.innerHTML='<div class="wrap"><div class="bh"><h2>'+esc(N.n||t.id)+'</h2><span class="fam">'+esc(N.fam||'')+'</span></div>'+
+      '<div class="grid"><div class="left">'+
+      '<div class="motif"><canvas aria-hidden="true"></canvas><div class="fx scrim" style="opacity:.55"></div><div class="fx grain"></div><div class="lock"><p class="eyebrow">Listening Room · Ed. '+esc(E.series.edition)+' · '+esc(E.series.month)+'</p><div><h3 class="name'+(t.title.fill?' fill':'')+'" style="margin:0">'+lines+'</h3><p class="tag">'+esc(E.dj.tagline)+'</p></div></div></div>'+
+      '<div class="tix"><figure><figcaption>Customer card · locked</figcaption><div class="slot" data-state="locked"></div></figure><figure><figcaption>Customer card · confirmed</figcaption><div class="slot" data-state="confirmed"></div></figure></div></div>'+
+      '<div class="right"><div class="card"><h3>Palette · contrast on void</h3><div class="sw">'+swatches+'</div></div>'+
+      '<div class="card spec"><h3>Type</h3><div class="row"><small>Display</small><span class="d">'+esc(E.dj.name)+'</span></div><div class="row"><small>Body</small><span class="b">The address unlocks at checkout.</span></div><div class="row"><small>Label</small><span class="m">Thu, Nov 19 · 8:00 PM</span></div></div>'+
+      '<div class="card"><h3>Motion signature</h3><p>'+esc(N.motion||'')+'</p><p class="m" style="margin-top:8px">Ease: '+esc(N.ease||'')+'</p></div>'+
+      '<div class="card"><h3>Voice</h3><p>'+esc(N.voice||'')+'</p><p class="m" style="margin-top:8px">“'+esc(E.statement)+'”</p></div>'+
+      '<div class="card"><h3>Do</h3><ul>'+(N.does||[]).map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul><h3 style="margin-top:16px">Don’t</h3><ul class="dont">'+(N.donts||[]).map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>'+refHTML+'</div></div></div>';
+    host.appendChild(s);
+    // live motif
+    LR.mountArt(s.querySelector('.motif canvas'),{E:E,fps:30,prog:.35,seed:t.seed||0,safe:true});
+    // tickets: still render, then freeze to an image so we never exceed the browser's WebGL context limit
+    [].forEach.call(s.querySelectorAll('.slot'),function(slot){
+      var st=slot.getAttribute('data-state');
+      slot.innerHTML=LR.ticketHTML({E:E,state:st,foot:'<span class="btn btn--block">'+esc((E.cta&&E.cta.label)||'Reserve')+' · $'+E.event.price+'</span>',note:esc(E.closing.note)});
+      var tk=slot.querySelector('.tk');
+      if(st==='confirmed'){tk.querySelector('[data-k=addr]').textContent=E.event.venueName+' · '+E.event.venueAddress;tk.querySelector('[data-k=lockLabel]').textContent='Unlocked';tk.querySelector('[data-k=state]').textContent='Confirmed';tk.querySelector('[data-k=qr]').innerHTML=LR.qrSVG('LR|'+E.slug+'|LR-ED01-K7M2QX|2');tk.querySelector('[data-k=foot]').innerHTML='<dl class="tk-hold"><div><dt>Holder</dt><dd>Jordan Ellis</dd></div><div><dt>Reference</dt><dd>LR-ED01-K7M2QX</dd></div><div><dt>Admit</dt><dd>2</dd></div></dl>'}
+      var cv=tk.querySelector('canvas'),c=LR.mountArt(cv,{E:E,still:true,keep:true,prog:.6,seed:7,timeOffset:30,dprMax:1.25});
+      if(c){try{var img=new Image();img.alt='';img.src=cv.toDataURL('image/png');img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';cv.parentNode.insertBefore(img,cv);var gl=cv.getContext('webgl');var ext=gl&&gl.getExtension('WEBGL_lose_context');cv.remove();c.destroy();if(ext)ext.loseContext()}catch(e){}}
+    });
+  });
+
+  // compare table
+  var rows=window.EDS.map(function(E){var t=E.theme,N=NOTES[t.id]||{};return '<tr><td><b>'+esc((N.n||t.id).replace(/^Concept \d+ · /,''))+'</b></td><td>'+esc(t.shader)+'</td><td>'+esc(E.dj.name)+'</td><td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+t.tokens.acc+';margin-right:8px"></span>'+t.tokens.acc+'</td><td>'+esc(t.ease)+'</td></tr>'}).join('');
+  var cmp=document.createElement('section');cmp.className='wrap rules';cmp.style.paddingTop='clamp(32px,5vw,64px)';
+  cmp.innerHTML='<div class="panel"><p class="kick">At a glance</p><h2>Five skins, one frame</h2><div class="compare"><table><thead><tr><th>Skin</th><th>Motif</th><th>Persona</th><th>Accent</th><th>Ease</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  host.appendChild(cmp);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Research: what a top music-event site does, and what I took from it · Listening Room</title><link rel="stylesheet" href="../site/assets/css/fonts.css">
+<style>
+:root{--bg:#09090a;--ink:#f1eee7;--mu:#b5b0a4;--line:rgba(255,255,255,.14);--gold:#c8a45c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 'Manrope Variable',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(20px,4vw,48px) 96px}
+nav{font:600 12px/1 'JetBrains Mono Variable',monospace;letter-spacing:.14em;text-transform:uppercase}nav a{color:var(--gold);text-decoration:none;display:inline-flex;min-height:44px;align-items:center}
+h1{margin:18px 0 22px;font:400 clamp(2.4rem,6vw,4.6rem)/1 'Instrument Serif',Georgia,serif;letter-spacing:-.02em}
+h2{margin:2.4em 0 .6em;font:400 clamp(1.6rem,3vw,2.3rem)/1.1 'Instrument Serif',Georgia,serif;padding-top:.6em;border-top:1px solid var(--line)}
+p,li{color:#d9d5ca;max-width:78ch}strong{color:#fff}a{color:var(--gold)}code{font:500 .88em 'JetBrains Mono Variable',monospace;background:rgba(255,255,255,.08);padding:.1em .4em;border-radius:6px}
+pre{overflow:auto;padding:16px;border-radius:12px;background:#111113;box-shadow:inset 0 0 0 1px var(--line)}pre code{background:none;padding:0}
+.tw{overflow-x:auto;margin:1em 0;border-radius:14px;box-shadow:inset 0 0 0 1px var(--line)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}th,td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font:700 12px/1.3 'JetBrains Mono Variable',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:rgba(255,255,255,.03);white-space:nowrap}tr:last-child td{border-bottom:0}
+td:first-child{white-space:nowrap}
+</style></head><body><div class="wrap"><nav><a href="../concepts/index.html">&larr; All concepts</a></nav><h1>Research: what a top music-event site does, and what I took from it</h1>
+<p>Scope: this file is public-safe. It describes <strong>sound families</strong> and design references only. It names no real artists, because <code>HANDOFF.md</code> keeps real names, likenesses, logos and tour data out of this public repo. The artist-by-artist notes live in a private file that ships with the concept bundle, not here.</p>
+<h2>1. The brief, reduced to requirements</h2>
+<p>Source: a community post proposing a monthly "listening party" for Montgomery, plus the brief given for this build. IDs are used across every other document.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>A listening party every month</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>One DJ is highlighted each month</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>People come to vibe and enjoy the DJ's set list</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>The DJ is free to be creative and try new things</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>It is not a club and not a party event: a social gathering</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>An intimate-sized venue</td>
+</tr>
+<tr>
+<td>P7</td>
+<td>Light snacks and drinks available</td>
+</tr>
+<tr>
+<td>P8</td>
+<td>Tickets bought in advance to get in</td>
+</tr>
+<tr>
+<td>P9</td>
+<td>The location is revealed only to ticket buyers, no exceptions</td>
+</tr>
+<tr>
+<td>B1</td>
+<td>One page; scroll animation funnels the visitor and promotes the experience</td>
+</tr>
+<tr>
+<td>B2</td>
+<td>The hero is the star and the only section</td>
+</tr>
+<tr>
+<td>B3</td>
+<td>Customizable to the DJ, their aesthetic and their set list</td>
+</tr>
+<tr>
+<td>B4</td>
+<td>A link to a separate payment page</td>
+</tr>
+<tr>
+<td>B5</td>
+<td>The payment page builds a customer card in the hero's aesthetic, with the location (Mirror Finish card as the reference)</td>
+</tr>
+<tr>
+<td>B6</td>
+<td>A brand board versatile enough for weekly consistency yet unique per DJ</td>
+</tr>
+<tr>
+<td>B7</td>
+<td>Five website concepts to send to a friend, and one live site</td>
+</tr>
+<tr>
+<td>B8</td>
+<td>High-end craft: references, type, graphics, animation, detail</td>
+</tr>
+<tr>
+<td>B9</td>
+<td>Audited against the UI/UX fundamentals</td>
+</tr>
+</tbody>
+</table></div>
+<h2>2. References I actually opened</h2>
+<p>Verified, with what each one gave the build.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Reference</th>
+<th>What it showed</th>
+<th>Used here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.awwwards.com/sites/no-art">Awwwards: No Art</a>, Site of the Day, 6 Aug 2026</td>
+<td>A music and art platform: loading sequence, microinteractions, GSAP, Webflow. Its <strong>lowest score was developer accessibility (6.6)</strong></td>
+<td>A short intro (about 1.2s), and accessibility treated as the place award-style sites lose points: static fallback, 12px floor, 44px targets, measured</td>
+</tr>
+<tr>
+<td><a href="https://www.awwwards.com/websites/music-sound/">Awwwards: Music and Sound</a></td>
+<td>The 2026 field: artist and band identities, audio-led interaction, festival sites</td>
+<td>Direction only. I could not read per-site technique from the listing</td>
+</tr>
+<tr>
+<td><a href="https://www.utsubo.com/blog/best-threejs-websites-2026">Three.js sites in 2026</a></td>
+<td>Scroll-sequenced beats (entrance, hold, exit); <strong>scroll as camera depth</strong>; a full-viewport GLSL fragment shader behind clean type is the best impact for effort; meaningful HTML first; a lighter fallback on phones</td>
+<td>One shader per skin behind real HTML text; scroll drives depth in the LED corridor and the rising sun; half-resolution canvas on phones; static layout without WebGL</td>
+</tr>
+<tr>
+<td>21st.dev: Hero Scrub, Admit One Ticket</td>
+<td>Pin-based GSAP ScrollTrigger choreography that respects Reduce Motion; a ticket with a perforated stub, 3D tilt and glare</td>
+<td>The pinned stage with a scrubbed master timeline; the ticket's perforation, pointer tilt and glare</td>
+</tr>
+<tr>
+<td>Your repos: WD-AutoDetailing</td>
+<td>The Mirror Finish tokens (void, ivory, one tempered gold) and the "Design B" customer card: image-led, fades to black, status dot, tabular prices, pill CTA, PNG export</td>
+<td>The base skin uses the tokens verbatim; the card follows the same anatomy and exports a PNG</td>
+</tr>
+<tr>
+<td>Your repos: spread-app</td>
+<td><code>FOUNDATIONAL_UX_PRINCIPLES.md</code>: seven fundamentals, ten laws, 390/820/1024/1440 checks, Reduce Motion</td>
+<td>The audit structure and breakpoints</td>
+</tr>
+</tbody>
+</table></div>
+<p>Mentioned but not studied in depth: an electronic artist's site (Awwwards Developer Award and Site of the Day, 2 Sep 2026), a designer portfolio built around music and sound (9 Oct 2026), and an audio-plugin company site (15 Oct 2026). I did not extract their technique or fonts; I am not claiming to have copied them.</p>
+<p>Weak sources, used only for direction: festival-site guides (balance high-impact visuals against load time so ticket buying is not slowed; a clear call to action above the fold) and 2026 trend roundups (oversized variable type, grain overlays, retro-futurist chrome, CSS scroll-driven animation). The roundups disagree on browser support for CSS scroll-driven animation, so the build uses GSAP ScrollTrigger and does not depend on it.</p>
+<h2>3. Techniques adopted and where they live</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>Where</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pinned stage, scrubbed master timeline</td>
+<td><code>lr-hero.js</code></td>
+<td>The scroll is the funnel; nothing happens that the visitor did not scroll</td>
+</tr>
+<tr>
+<td>The bottom "night" scrubber with a clock from doors to close</td>
+<td><code>.player</code></td>
+<td>Scroll depth and time-of-night become the same thing; chapters double as navigation</td>
+</tr>
+<tr>
+<td>Shader motif per skin (raw WebGL1, no library)</td>
+<td><code>lr-shaders.js</code></td>
+<td>High impact for about 8 KB of code; the same uniform API for every skin</td>
+</tr>
+<tr>
+<td>Text sits on a dimmed side, data sits on glass</td>
+<td>shader <code>uSafe</code>, <code>.scrim</code>, <code>.specs</code>, <code>.set-viz</code></td>
+<td>Legibility is measured, not assumed (see UX-AUDIT.md)</td>
+</tr>
+<tr>
+<td>Scroll-scrubbed word reveal</td>
+<td><code>.statement .w</code></td>
+<td>Reading speed becomes scroll speed</td>
+</tr>
+<tr>
+<td>Energy arc that draws as you scroll</td>
+<td><code>arcSVG()</code></td>
+<td>A set is a journey, not a track list (P3, P4)</td>
+</tr>
+<tr>
+<td>3D-tilt ticket with glare and perforation</td>
+<td><code>.tk</code></td>
+<td>A tactile object at the end of the funnel</td>
+</tr>
+<tr>
+<td>Location decrypt on confirm</td>
+<td><code>scramble()</code> in <code>lr-pay.js</code></td>
+<td>The peak moment of the flow (P9)</td>
+</tr>
+<tr>
+<td>Grain overlay and vignette</td>
+<td><code>.grain</code>, <code>.vignette</code></td>
+<td>Film texture, no extra weight</td>
+</tr>
+<tr>
+<td>Self-hosted variable fonts</td>
+<td><code>assets/fonts</code></td>
+<td>No third-party requests; one font file per skin</td>
+</tr>
+</tbody>
+</table></div>
+<h2>4. Type</h2>
+<p>Constants (every edition): <strong>Manrope</strong> for body, <strong>JetBrains Mono</strong> for labels at 12px or larger. Variable (one per skin):</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Skin</th>
+<th>Display face</th>
+<th>Treatment</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quiet Spectra</td>
+<td>Instrument Serif</td>
+<td>Tight, mixed case</td>
+<td>It is already the Mirror Finish display face</td>
+</tr>
+<tr>
+<td>LED Stage</td>
+<td>Big Shoulders Display</td>
+<td>900 weight, caps</td>
+<td>Condensed and industrial; huge without eating the width</td>
+</tr>
+<tr>
+<td>Golden Hour</td>
+<td>Bodoni Moda italic</td>
+<td>800 weight, gold foil gradient</td>
+<td>High contrast and luxury; the foil only ever sits on the name</td>
+</tr>
+<tr>
+<td>Chrome Disco</td>
+<td>Unbounded</td>
+<td>800 weight, caps, chrome gradient with a slow sheen</td>
+<td>Wide and polished; body headings scale to 78% because it is so wide</td>
+</tr>
+<tr>
+<td>Brass and Night</td>
+<td>Fraunces italic</td>
+<td>300 weight, large</td>
+<td>Soft, cinematic, a film title card</td>
+</tr>
+</tbody>
+</table></div>
+<h2>5. Sound families</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Skin</th>
+<th>Sound family</th>
+<th>Room</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quiet Spectra</td>
+<td>Slow house, vinyl edits</td>
+<td>A quiet field of marks</td>
+</tr>
+<tr>
+<td>LED Stage</td>
+<td>Progressive electro, long builds</td>
+<td>A corridor of light</td>
+</tr>
+<tr>
+<td>Golden Hour</td>
+<td>Hip-hop, R&amp;B, soul samples</td>
+<td>A sunset and a toast</td>
+</tr>
+<tr>
+<td>Chrome Disco</td>
+<td>Disco edits, funk, French-touch house</td>
+<td>Polished metal</td>
+</tr>
+<tr>
+<td>Brass and Night</td>
+<td>House, garage, afro-house, late set</td>
+<td>A spotlight and a record</td>
+</tr>
+</tbody>
+</table></div>
+<h2>6. What I could not verify</h2>
+<ul>
+<li>The fonts and exact techniques of the reference sites are not published on their listings.</li>
+<li>Trend claims come from vendor blogs and conflict with each other; none is used as a fact.</li>
+<li>No real-device, screen-reader or 200% zoom testing has been done. See the open issues in UX-AUDIT.md.</li>
+</ul></div></body></html>

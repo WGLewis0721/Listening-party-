@@ -1,0 +1,400 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Listening Room: UX audit · Listening Room</title><link rel="stylesheet" href="../site/assets/css/fonts.css">
+<style>
+:root{--bg:#09090a;--ink:#f1eee7;--mu:#b5b0a4;--line:rgba(255,255,255,.14);--gold:#c8a45c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 'Manrope Variable',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(20px,4vw,48px) 96px}
+nav{font:600 12px/1 'JetBrains Mono Variable',monospace;letter-spacing:.14em;text-transform:uppercase}nav a{color:var(--gold);text-decoration:none;display:inline-flex;min-height:44px;align-items:center}
+h1{margin:18px 0 22px;font:400 clamp(2.4rem,6vw,4.6rem)/1 'Instrument Serif',Georgia,serif;letter-spacing:-.02em}
+h2{margin:2.4em 0 .6em;font:400 clamp(1.6rem,3vw,2.3rem)/1.1 'Instrument Serif',Georgia,serif;padding-top:.6em;border-top:1px solid var(--line)}
+p,li{color:#d9d5ca;max-width:78ch}strong{color:#fff}a{color:var(--gold)}code{font:500 .88em 'JetBrains Mono Variable',monospace;background:rgba(255,255,255,.08);padding:.1em .4em;border-radius:6px}
+pre{overflow:auto;padding:16px;border-radius:12px;background:#111113;box-shadow:inset 0 0 0 1px var(--line)}pre code{background:none;padding:0}
+.tw{overflow-x:auto;margin:1em 0;border-radius:14px;box-shadow:inset 0 0 0 1px var(--line)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}th,td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font:700 12px/1.3 'JetBrains Mono Variable',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:rgba(255,255,255,.03);white-space:nowrap}tr:last-child td{border-bottom:0}
+td:first-child{white-space:nowrap}
+</style></head><body><div class="wrap"><nav><a href="../concepts/index.html">&larr; All concepts</a></nav><h1>Listening Room: UX audit</h1>
+<p>Audited 3 Nov 2026 against the seven fundamentals and the laws of UX in <code>spread-app/docs/design/FOUNDATIONAL_UX_PRINCIPLES.md</code>, with the Mirror Finish tokens from <code>WD-AutoDetailing</code> as the base skin. Scope: five editions (the live base plus four concepts), each with a hero and a pay page.</p>
+<p><strong>Method.</strong> Headless Chromium, software WebGL, at 390, 820, 1024 and 1440 px wide, plus a Reduce Motion run. The scripts are in <code>tools/qa/</code>. Every number below came from a script, not from eyeballing a screenshot.</p>
+<p><strong>Not tested.</strong> Real iOS Safari and Android Chrome, VoiceOver, TalkBack, 200% zoom, and GPU performance on a mid-range phone. Software rendering says nothing about frame rate. These are the open issues at the bottom.</p>
+<h2>Result summary</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Console errors or warnings</td>
+<td>0 on all pages</td>
+</tr>
+<tr>
+<td>Third-party requests</td>
+<td>0 (fonts, GSAP and the QR library are self-hosted)</td>
+</tr>
+<tr>
+<td>Horizontal overflow at 390, 820, 1024, 1440</td>
+<td>0 px on every hero and pay page</td>
+</tr>
+<tr>
+<td>Reduce Motion</td>
+<td>Stacked static layout, all text at full opacity, 0 px overflow, no pinning</td>
+</tr>
+<tr>
+<td>Scroll-state assertions (right layers visible at 5 stops)</td>
+<td>Pass on all 5 skins and 4 viewports</td>
+</tr>
+<tr>
+<td>Primary buttons visible on the last beat</td>
+<td>Exactly 1 on every skin and viewport</td>
+</tr>
+<tr>
+<td>Text under 12px</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Tap targets under 44px</td>
+<td>0 (brand link, buttons, chapter ticks, stepper, inputs)</td>
+</tr>
+<tr>
+<td>Form inputs</td>
+<td>16px, each with a <code>label</code>, errors announced with <code>role="alert"</code></td>
+</tr>
+<tr>
+<td>Page weight, hero (HTML, CSS, JS, fonts)</td>
+<td>271 to 330 KB per skin</td>
+</tr>
+<tr>
+<td>Text over the live art, 150 text lines measured</td>
+<td>150 of 150 pass, tightest 5.8:1</td>
+</tr>
+<tr>
+<td>Flat token contrast (all pairs)</td>
+<td>7.7:1 or better, which is AAA everywhere</td>
+</tr>
+<tr>
+<td>Pay flow (validate, reserve, unlock, PNG, calendar file, reload)</td>
+<td>Pass on all 5 skins</td>
+</tr>
+<tr>
+<td>Rewind stress test (scroll to the end and back, 30 jumps)</td>
+<td>0 failures</td>
+</tr>
+</tbody>
+</table></div>
+<h2>The seven fundamentals</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Fundamental</th>
+<th>Result</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unity</td>
+<td>Pass</td>
+<td>One frame, one ticket component and one scrubber across five skins; only tokens, face, motif and ease change</td>
+</tr>
+<tr>
+<td>Balance</td>
+<td>Pass</td>
+<td>The name is the first read; the art lives on the open side and the type column is dark by design (<code>uSafe</code>)</td>
+</tr>
+<tr>
+<td>Hierarchy</td>
+<td>Pass</td>
+<td>Eyebrow, name, promise, then one beat at a time; one dominant action per state</td>
+</tr>
+<tr>
+<td>Contrast</td>
+<td>Pass, measured</td>
+<td>Token pairs 7.7:1 or better; every text line over live art 5.8:1 or better (method below)</td>
+</tr>
+<tr>
+<td>Emphasis</td>
+<td>Pass</td>
+<td>The top-bar button yields to the ticket button on the last beat; asserted, not assumed</td>
+</tr>
+<tr>
+<td>Scale</td>
+<td>Pass</td>
+<td>12px floor, 44px targets, 16px inputs, fluid display type with a per-skin heading scale for wide faces</td>
+</tr>
+<tr>
+<td>Repetition</td>
+<td>Pass</td>
+<td><code>LR.ticketHTML</code> renders the card on the hero, the pay page and the boards</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Laws of UX</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Law</th>
+<th>Result</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hick</td>
+<td>Pass</td>
+<td>One filled button at a time; the pay form has three inputs</td>
+</tr>
+<tr>
+<td>Jakob</td>
+<td>Pass</td>
+<td>Checkout looks like checkout; native scroll, no scroll hijacking; chapters are real buttons</td>
+</tr>
+<tr>
+<td>Fitts</td>
+<td>Pass</td>
+<td>48px buttons, full-width on phones in the thumb zone, 44px chapter ticks</td>
+</tr>
+<tr>
+<td>Gestalt</td>
+<td>Pass</td>
+<td>Data on glass panels; set rows, stats and chips each form one visible group</td>
+</tr>
+<tr>
+<td>Miller / chunking</td>
+<td>Pass</td>
+<td>Five beats, five set slots, three stats</td>
+</tr>
+<tr>
+<td>Tesler</td>
+<td>Pass</td>
+<td>The complexity (arc, theme, motif) lives in <code>edition.js</code>, not in the visitor's path</td>
+</tr>
+<tr>
+<td>Doherty</td>
+<td>Pass, local only</td>
+<td>Static files; the button responds immediately. The demo "processing" state is an honest 1.1s, labeled as a demo</td>
+</tr>
+<tr>
+<td>Aesthetic-usability</td>
+<td>Pass</td>
+<td>Reduce Motion and no-WebGL both give a complete working page</td>
+</tr>
+<tr>
+<td>Von Restorff / serial position</td>
+<td>Pass</td>
+<td>The ticket is the only filled object at the end of the funnel</td>
+</tr>
+<tr>
+<td>Goal-gradient / Zeigarnik / Peak-end</td>
+<td>Pass</td>
+<td>The scrubber is visible progress; the pay card survives a reload; the unlock is the peak</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Text over the art (how it was measured)</h2>
+<p>Flat color tables cannot prove legibility over moving shader art. So for each of 10 skin-and-viewport combinations at 5 scroll stops, the script records the exact box of every text line (using DOM ranges, not element boxes), hides the interface, screenshots the bare art, and takes the <strong>brightest 5% of pixels</strong> under each line as the worst-case background. That is deliberately harsher than an average.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Skin</th>
+<th>390 px, tightest</th>
+<th>1440 px, tightest</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 Quiet Spectra</td>
+<td>8.0 : 1</td>
+<td>8.4 : 1</td>
+</tr>
+<tr>
+<td>02 LED Stage</td>
+<td>6.7 : 1</td>
+<td>7.6 : 1</td>
+</tr>
+<tr>
+<td>03 Golden Hour</td>
+<td>5.8 : 1</td>
+<td>10.2 : 1</td>
+</tr>
+<tr>
+<td>04 Chrome Disco</td>
+<td>8.5 : 1</td>
+<td>8.8 : 1</td>
+</tr>
+<tr>
+<td>05 Brass and Night</td>
+<td>8.6 : 1</td>
+<td>8.6 : 1</td>
+</tr>
+</tbody>
+</table></div>
+<p>Targets: 4.5 : 1 body, 3 : 1 at 24px or larger. The halo <code>text-shadow</code> on body copy is not counted, so real legibility is a little better than these figures.</p>
+<h2>Flat token contrast (void, surface, ink, muted, accent)</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Skin</th>
+<th>ink / void</th>
+<th>muted / void</th>
+<th>accent / void</th>
+<th>on-accent / accent</th>
+<th>ink / surface</th>
+<th>muted / surface</th>
+<th>accent / surface</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 Quiet Spectra</td>
+<td>18.2</td>
+<td>9.5</td>
+<td>8.4</td>
+<td>8.4</td>
+<td>16.9</td>
+<td>8.8</td>
+<td>7.7</td>
+</tr>
+<tr>
+<td>02 LED Stage</td>
+<td>19.3</td>
+<td>8.3</td>
+<td>14.4</td>
+<td>13.7</td>
+<td>18.1</td>
+<td>7.8</td>
+<td>13.6</td>
+</tr>
+<tr>
+<td>03 Golden Hour</td>
+<td>17.7</td>
+<td>10.5</td>
+<td>10.6</td>
+<td>10.3</td>
+<td>16.5</td>
+<td>9.8</td>
+<td>9.9</td>
+</tr>
+<tr>
+<td>04 Chrome Disco</td>
+<td>18.5</td>
+<td>8.8</td>
+<td>15.9</td>
+<td>15.6</td>
+<td>17.1</td>
+<td>8.2</td>
+<td>14.7</td>
+</tr>
+<tr>
+<td>05 Brass and Night</td>
+<td>17.0</td>
+<td>9.6</td>
+<td>8.6</td>
+<td>8.0</td>
+<td>15.8</td>
+<td>8.9</td>
+<td>7.9</td>
+</tr>
+</tbody>
+</table></div>
+<h2>What the audit found, and what was done</h2>
+<p>These are the defects, in the order they were found. Several were found by the measurement and not by looking.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Defect</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Phone top bar wrapped ("LISTENING / ROOM", "Reserve · / $25")</td>
+<td>Single-line brand, hidden edition tag, no-wrap buttons</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Arc axis labels rendered at 6 to 9.6px (SVG text scaled down)</td>
+<td>Axis labels are real 12px HTML, not SVG text</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Gold chart line lost against the gold sun</td>
+<td>Chart and spec list sit on a blurred glass panel on every skin</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Arrive text stayed visible during later beats.</strong> An intro tween and the scroll tween both drove the same opacity</td>
+<td>Intro for those elements is CSS, never GSAP; the scroll-state assertion was added so this class of bug cannot return unnoticed</td>
+</tr>
+<tr>
+<td>5</td>
+<td>10.5 to 11.5px labels in 9 places</td>
+<td>Every label is 12px or larger</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Brand link only 22 to 26px tall</td>
+<td>44px minimum</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Reduce Motion layout overflowed by 25 to 46px (negative margins on the title lines)</td>
+<td>Clipped in static mode</td>
+</tr>
+<tr>
+<td>8</td>
+<td>13 text lines under contrast over the art; worst 1.1:1 (Golden Hour tagline on the sun on phones)</td>
+<td>Shader-side text-safe dim on the type side, sun scaled to the screen width, sun moved off the type column, spotlight kept off the type column, brighter tagline and labels, halo shadow</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Chrome title and tagline dissolved into equally bright metal</td>
+<td>Metal darkened on the type side, bright on the open side</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Wide faces broke the layout on phones ("HALOGEN" split mid-word, "Amani" and "CHROME" clipped, stats colliding)</td>
+<td>Per-skin phone title sizes; a heading scale of 0.78 for the wide Unbounded face</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Empty glass panel visible before its rows faded in</td>
+<td>The panel fades with its rows</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Exported card PNG was truncated (QR and reference cut off)</td>
+<td>The canvas is sized to its content</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Sticky pay-page bar was transparent, so content collided with it</td>
+<td>Opaque blurred bar</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>Two bugs in my own tooling:</strong> text boxes measured at block width (full container) and <code>color-mix()</code> colors parsed as black</td>
+<td>Measured with DOM ranges; parser handles <code>color(srgb …)</code>. Without these the audit reported false failures</td>
+</tr>
+<tr>
+<td>15</td>
+<td>One scroll-state failure in a full run</td>
+<td>Not reproducible: 0 failures in 30 rewinds when run alone. It happened while two audits were sharing the CPU, and is recorded here as a timing artifact, not a fix</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Motion safety</h2>
+<p>Nothing flashes. The fastest repeating motion is the final button's 2.2s pulse ring (0.45 Hz). The LED rings travel at about 0.5 Hz, the foil sheen takes 7s, the dust and dots drift. Under Reduce Motion every animation stops, the shaders render one still frame, and the page becomes a stacked static layout.</p>
+<h2>Open issues (not done)</h2>
+<ol>
+<li><strong>Real devices.</strong> iOS Safari and Android Chrome, especially the collapsing browser bar over the pinned stage and WebGL frame rate on a mid-range phone. The canvas is half resolution on phones and pauses off-screen, but this is unmeasured.</li>
+<li><strong>Assistive technology.</strong> VoiceOver and TalkBack have not been run. Chapter changes are not announced to screen readers, and the decoy address has a spoken alternative but this is untested.</li>
+<li><strong>200% zoom and <code>prefers-contrast</code></strong> are untested.</li>
+<li><strong>Keyboard reach.</strong> The ticket button is hidden until the last beat, so a keyboard user reaches it with the "Skip to reserve" link or the Ticket chapter. This is deliberate and works, but is worth a real user test.</li>
+<li><strong>Payment.</strong> Demo only. The Stripe or Square link mode is an untested template. The address is readable in <code>edition.js</code> and must move server-side for a real night.</li>
+<li><strong>Fabricated scarcity.</strong> <code>seatsLeft</code> is <code>null</code>, so no count is shown. Wire it to real inventory or leave it off.</li>
+</ol></div></body></html>

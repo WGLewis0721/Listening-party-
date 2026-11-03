@@ -1,0 +1,216 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Listening Room brand system · Listening Room</title><link rel="stylesheet" href="../site/assets/css/fonts.css">
+<style>
+:root{--bg:#09090a;--ink:#f1eee7;--mu:#b5b0a4;--line:rgba(255,255,255,.14);--gold:#c8a45c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 'Manrope Variable',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(20px,4vw,48px) 96px}
+nav{font:600 12px/1 'JetBrains Mono Variable',monospace;letter-spacing:.14em;text-transform:uppercase}nav a{color:var(--gold);text-decoration:none;display:inline-flex;min-height:44px;align-items:center}
+h1{margin:18px 0 22px;font:400 clamp(2.4rem,6vw,4.6rem)/1 'Instrument Serif',Georgia,serif;letter-spacing:-.02em}
+h2{margin:2.4em 0 .6em;font:400 clamp(1.6rem,3vw,2.3rem)/1.1 'Instrument Serif',Georgia,serif;padding-top:.6em;border-top:1px solid var(--line)}
+p,li{color:#d9d5ca;max-width:78ch}strong{color:#fff}a{color:var(--gold)}code{font:500 .88em 'JetBrains Mono Variable',monospace;background:rgba(255,255,255,.08);padding:.1em .4em;border-radius:6px}
+pre{overflow:auto;padding:16px;border-radius:12px;background:#111113;box-shadow:inset 0 0 0 1px var(--line)}pre code{background:none;padding:0}
+.tw{overflow-x:auto;margin:1em 0;border-radius:14px;box-shadow:inset 0 0 0 1px var(--line)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}th,td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font:700 12px/1.3 'JetBrains Mono Variable',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:rgba(255,255,255,.03);white-space:nowrap}tr:last-child td{border-bottom:0}
+td:first-child{white-space:nowrap}
+</style></head><body><div class="wrap"><nav><a href="../concepts/index.html">&larr; All concepts</a></nav><h1>Listening Room brand system</h1>
+<p>One <strong>frame</strong> that never changes, and one <strong>skin</strong> that changes for every DJ. The frame is what makes every edition the same quality. The skin is what makes it theirs. The live boards (<code>brand-boards.html</code>) are generated from the real edition files, so they cannot drift from the site.</p>
+<h2>Frame (identical every edition)</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Structure</td>
+<td>One pinned hero, five beats: Arrive, Sound, Set, Room, Ticket, over about 520vh of scroll</td>
+</tr>
+<tr>
+<td>Scrubber</td>
+<td>A bottom bar: chapter ticks (also navigation) and a clock that runs from doors to close</td>
+</tr>
+<tr>
+<td>Primary action</td>
+<td>Exactly one filled button on screen: the top bar's until the last beat, then the ticket's</td>
+</tr>
+<tr>
+<td>Ticket</td>
+<td>Plate, head, overline, title, tagline, meta, lines, location, QR, perforation, foot, always in that order</td>
+</tr>
+<tr>
+<td>Type roles</td>
+<td>Display = skin; body = Manrope; labels = JetBrains Mono, 12px or larger</td>
+</tr>
+<tr>
+<td>Grid</td>
+<td>12 columns, 5vw margins; data sits on a blurred glass panel so any motif stays legible</td>
+</tr>
+<tr>
+<td>Motion</td>
+<td>Scroll-scrubbed; intro under 2 seconds; nothing flashes; Reduce Motion becomes a stacked static page</td>
+</tr>
+<tr>
+<td>Secret address</td>
+<td>A decoy blurs on the hero; the real address decrypts on the pay-page card after payment</td>
+</tr>
+<tr>
+<td>Copy order</td>
+<td>Eyebrow, name, tagline, statement, set, room, closing</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Skin (changes per DJ, all in <code>edition.js</code>)</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Choices today</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Motif</td>
+<td><code>spectra</code>, <code>tunnel</code>, <code>sunburst</code>, <code>mercury</code>, <code>spotlight</code></td>
+<td>A new motif is a fragment shader using the same uniforms (<code>uRes uTime uProg uPtr uSeed uSafe uBg uInk uAcc uAcc2</code>)</td>
+</tr>
+<tr>
+<td>Display face</td>
+<td>Instrument Serif, Big Shoulders Display, Bodoni Moda, Unbounded, Fraunces</td>
+<td>Plus a title treatment: case, weight, style, an optional foil or chrome gradient, a heading scale</td>
+</tr>
+<tr>
+<td>Palette</td>
+<td><code>bg surface ink muted acc acc2 accOn</code></td>
+<td>Must pass the guardrails below</td>
+</tr>
+<tr>
+<td>Motion feel</td>
+<td><code>ease</code>, intro stagger</td>
+<td>A GSAP ease name, for example <code>expo.out</code> (slow) or <code>power4.out</code> (hard)</td>
+</tr>
+<tr>
+<td>Voice</td>
+<td>Tagline, statement, slot names</td>
+<td>A film has acts, a funk night has hours</td>
+</tr>
+<tr>
+<td>Texture</td>
+<td><code>grain</code></td>
+<td>0.05 (clean) to 0.08 (cinematic)</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Guardrails (every skin must pass)</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Minimum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ink on void</td>
+<td>7 : 1</td>
+</tr>
+<tr>
+<td>Muted on void</td>
+<td>4.5 : 1</td>
+</tr>
+<tr>
+<td>Accent on void</td>
+<td>4.5 : 1</td>
+</tr>
+<tr>
+<td>On-accent on accent</td>
+<td>4.5 : 1</td>
+</tr>
+<tr>
+<td>Text over the live art</td>
+<td>4.5 : 1 body, 3 : 1 at 24px or larger, measured on the brightest 5% of the pixels behind each line</td>
+</tr>
+<tr>
+<td>Label size</td>
+<td>12px or larger</td>
+</tr>
+<tr>
+<td>Tap target</td>
+<td>44px or larger</td>
+</tr>
+</tbody>
+</table></div>
+<p>The text-over-art rule is why the shaders take a <code>uSafe</code> flag: on the stage canvas the side where type lives is dimmed inside the shader, and the art lives on the open side. Ticket plates leave it off.</p>
+<h2>The five skins</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Skin</th>
+<th>Persona (fictional)</th>
+<th>Motif</th>
+<th>Display face</th>
+<th>Palette (void / ink / accent / signal)</th>
+<th>Ease</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 Quiet Spectra</td>
+<td>Nova Vale</td>
+<td><code>spectra</code></td>
+<td>Instrument Serif</td>
+<td><code>#0b0b0c</code> <code>#f8f6f1</code> <code>#c8a45c</code> <code>#e2c07a</code></td>
+<td><code>expo.out</code></td>
+</tr>
+<tr>
+<td>02 LED Stage</td>
+<td>Halogen Ghost</td>
+<td><code>tunnel</code></td>
+<td>Big Shoulders Display</td>
+<td><code>#04050a</code> <code>#eafcff</code> <code>#2cf2e0</code> <code>#ff3d8b</code></td>
+<td><code>power4.out</code></td>
+</tr>
+<tr>
+<td>03 Golden Hour</td>
+<td>Amani Sol</td>
+<td><code>sunburst</code></td>
+<td>Bodoni Moda italic</td>
+<td><code>#06120e</code> <code>#fff6e2</code> <code>#f0b93a</code> <code>#ff6a3d</code></td>
+<td><code>expo.out</code></td>
+</tr>
+<tr>
+<td>04 Chrome Disco</td>
+<td>Chrome Vector</td>
+<td><code>mercury</code></td>
+<td>Unbounded</td>
+<td><code>#07070a</code> <code>#f4f5f8</code> <code>#dfe5ee</code> <code>#ff9d2e</code></td>
+<td><code>power4.out</code></td>
+</tr>
+<tr>
+<td>05 Brass and Night</td>
+<td>Marlowe Brass</td>
+<td><code>spotlight</code></td>
+<td>Fraunces italic</td>
+<td><code>#0a0912</code> <code>#f6eddc</code> <code>#d4a24e</code> <code>#8f1d2c</code></td>
+<td><code>power3.out</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Producing a new edition (about fifteen minutes once the copy exists)</h2>
+<ol>
+<li>Copy <code>concepts/05-brass-night/</code> to a new folder and rename it. (<code>index.html</code> and <code>pay.html</code> never change.)</li>
+<li>In <code>edition.js</code>, set the DJ, the tagline, the statement, and five set slots with an <code>energy</code> from 0 to 1.</li>
+<li>Pick a motif, a display face and five colors. Open <code>brand-boards.html</code> and check every contrast row is green.</li>
+<li>Set <code>event</code> (date, doors, price, capacity) and <code>payment</code>.</li>
+<li>Screenshot at 390 and 1440 wide. Run <code>tools/qa/</code> (see its README) and make the pay flow once.</li>
+<li>Deploy.</li>
+</ol>
+<h2>Payment and the secret address</h2>
+<ul>
+<li><code>payment.mode = 'demo'</code> (default) takes no payment and unlocks the card locally, so the experience can be reviewed.</li>
+<li><code>payment.mode = 'link'</code> with <code>payment.url</code> redirects to a Stripe or Square payment link, passing a reference and the email. This path is a template and has <strong>not</strong> been tested against a live account.</li>
+<li>The venue address must be released by your server after the payment webhook fires. Anything in <code>edition.js</code> is readable by anyone, so for a real night remove <code>venueAddress</code> from the file and have the server return it.</li>
+</ul></div></body></html>
