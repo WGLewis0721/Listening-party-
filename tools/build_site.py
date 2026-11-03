@@ -126,7 +126,7 @@ def inject(rel):
             f'<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{e(og_title)}">'
             f'<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(og_title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="{e(image)}">'
             f'<link rel="icon" href="{up}favicon.ico" sizes="48x48"><link rel="icon" href="{up}favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="{up}apple-touch-icon.png"><link rel="manifest" href="{up}site.webmanifest"><!-- lr-meta:end -->')
-    if rel == '404.html' and BASE_PATH: rest = f'<base href="{BASE_PATH}/">' + rest            # a 404 can be served from any depth
+    if rel == '404.html' and BASE_PATH: sec = f'<base href="{BASE_PATH}/">' + sec               # a 404 is served at any depth; <base> must come BEFORE the first relative URL
     if re.search(r'<meta\s+charset[^>]*>', doc, re.I): doc = re.sub(r'(<meta\s+charset[^>]*>)', lambda m: m.group(1) + sec, doc, count=1, flags=re.I)
     else: doc = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + sec, doc, count=1, flags=re.I)
     doc = doc.replace('</head>', rest + '</head>', 1)

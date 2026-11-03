@@ -37,7 +37,7 @@
 - **A custom domain** (worth having for a portfolio): set the `SITE_URL` secret or edit `base_url`. Crawlers only read `robots.txt` and `security.txt` at the root of a host, so on the `github.io/<repo>/` address those two are written but ignored; on your own domain they work. A host that can send headers can use `tools/hosting/_headers`.
 - **Search visibility:** submit `sitemap.xml` in Google Search Console once the site is on its final address.
 - **Share previews:** Facebook caches a link's preview. After changing a title, description or image, paste the link into Facebook's Sharing Debugger and press "Scrape Again". Regenerate the images with `node tools/make_share_assets.js`.
-- **Tests:** `node tools/qa/site-meta.js <url>` (every page, the policy is enforced, no requests to other sites), plus the suites in `tools/qa/README.md`.
+- **Tests:** build, then `python3 tools/serve_site.py _site 8802` (serves it under `/Listening-party-/` with the real 404 page, like GitHub Pages) and `node tools/qa/site-meta.js http://localhost:8802/Listening-party-` (every page, the policy is enforced, no requests to other sites, a styled 404 at any depth), plus the suites in `tools/qa/README.md`.
 
 ## Running the night
 

@@ -38,6 +38,11 @@ const get = async (p) => { const r = await fetch(ORIGIN + p); return { status: r
     if ((should === 'index') !== gotIndex) problems.push('robots rule (' + m.robots + ') does not match the sitemap (' + should + ')');
     ok(!problems.length, p + (problems.length ? ': ' + problems.join('; ') : '')); await pg.close();
   }
+  // a bad address, however deep, lands on the styled 404 page (a <base> bug once left it unstyled)
+  { const pg4 = await ctx.newPage(), bad = []; pg4.on('response', r => { if (r.status() >= 400 && !/__no_such_page__/.test(r.url())) bad.push(r.status() + ' ' + r.url().slice(-50)); });
+    const r = await pg4.goto(ORIGIN + '/concepts/__no_such_page__/deep/path', { waitUntil: 'load' }); await pg4.waitForTimeout(500);
+    const h1 = await pg4.textContent('h1').catch(() => ''), font = await pg4.evaluate(() => document.querySelector('h1') ? getComputedStyle(document.querySelector('h1')).fontFamily : '').catch(() => '');
+    ok(r.status() === 404 && /not found/i.test(h1) && /Instrument Serif/.test(font) && !bad.length, 'a bad address ' + (r.status() === 404 ? 'returns 404 and ' : '(status ' + r.status() + ') ') + 'shows the styled 404 page, with its styles and fonts loaded' + (bad.length ? ' (failed: ' + bad[0] + ')' : '')); await pg4.close(); }
   // 3 · the policy is enforced, not just present
   const pg = await ctx.newPage(); await pg.goto(ORIGIN + '/', { waitUntil: 'load' }); await pg.waitForTimeout(1200);
   const inj = await pg.evaluate(() => new Promise(res => { let v = 0; document.addEventListener('securitypolicyviolation', () => v++); const s = document.createElement('script'); s.textContent = 'window.__pwn = 1'; document.body.appendChild(s); setTimeout(() => res({ ran: !!window.__pwn, v }), 300); }));
