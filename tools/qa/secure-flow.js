@@ -21,6 +21,11 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok(!ADDR.test(await dom()), 'address is not in the page before anything happens');
   ok(!ADDR.test(await pg.evaluate(() => JSON.stringify(window.LR_EDITION))), 'address is not in the public edition config');
   if (phone) ok(await inView('#go'), 'on a phone (with the browser bars showing) the Pay button is on the first screen, no scrolling');
+  // the footer (demo notice and the privacy / terms / accessibility / site map links) is really visible at the bottom of the page, not hidden under the artwork
+  await pg.evaluate(() => scrollTo(0, document.documentElement.scrollHeight)); await pg.waitForTimeout(400);
+  ok(await pg.evaluate(() => { const a = document.querySelector('.foot-links a'); if (!a) return false; const r = a.getBoundingClientRect(), t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!t && (t === a || a.contains(t)); }), 'the footer links are actually on top and tappable at the bottom of the page');
+  ok(await pg.evaluate(() => { const f = document.querySelector('.foot span'), r = f.getBoundingClientRect(), t = document.elementFromPoint(r.left + 8, r.top + r.height / 2); return !!t && f.parentElement.contains(t); }), 'the demo notice in the footer is visible, not covered by the artwork');
+  await pg.evaluate(() => scrollTo(0, 0));
   // validation speaks plainly
   await pg.click('#go'); await pg.waitForTimeout(300);
   ok(/type your name/i.test(await pg.textContent('#e-name')), 'an empty form says what to do: "' + (await pg.textContent('#e-name')) + '"');

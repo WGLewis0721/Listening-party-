@@ -24,6 +24,10 @@ jobs:
         # tools/build_site.py assembles _site/ (root = site/, a second copy at /site/, /concepts, /design) and adds the share tags, canonical links,
         # Content Security Policy, sitemap.xml, robots.txt and security.txt. Standard library only.
         run: python3 tools/build_site.py _site
+      - name: Check the built site
+        # Fails the deploy if a page lost its Content Security Policy, an inline script is not covered by it, anything loads from another website,
+        # a link is broken, the sitemap disagrees with the noindex rules, security.txt is about to expire, or a real artist name slipped in.
+        run: python3 tools/check_site.py _site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

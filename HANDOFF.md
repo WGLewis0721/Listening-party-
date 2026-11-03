@@ -3,7 +3,7 @@
 ## Status
 
 - **Live page:** `site/`, deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`. URL: `https://wglewis0721.github.io/Listening-party-/`.
-- **Client review site:** `/concepts/` on the same URL (picker, card generator, skin switcher), plus `/design/` (boards, wireframes, requirements, audit). The workflow assembles `_site/` from `site/` (root), a second copy of `site/` (the concept pages reference `../site/assets`), `concepts/` and `design/*.html`. Everything published is fictional and `noindex`.
+- **Client review site:** `/concepts/` on the same URL (picker, card generator, skin switcher), plus `/design/` (boards, wireframes, requirements, audit). The workflow assembles `_site/` from `site/` (root), a second copy of `site/` (the concept pages reference `../site/assets`), `concepts/` and `design/*.html`. Everything published is fictional. Search engines may index only the home page, the client picker, the design documents and the plain pages; the checkout, the door tool and the duplicate copies are `noindex` (see `tools/site-config.json`).
 - **Artist:** Nova Vale, fictional. Venue "The Annex Room" and its address are placeholders.
 - **Checkout:** a simulated Pay → Unlock flow with a stand-in for Square. No card is collected and nothing is charged. The real Square + Supabase server is written, type-checked and database-tested (30 SQL checks on PostgreSQL 16), but **never deployed and never run against Square**. See `design/SECURE-CARD-FLOW.md` and `server/README.md`.
 - **Verified:** scripted checks on all five skins (see `design/UX-AUDIT.md`). **Not verified:** real phones, screen readers, 200% zoom, live payments.
@@ -14,7 +14,7 @@
 2. **Payments (Square).** Deploy `server/` and switch `payment.mode` to `'live'` (steps, secrets and the Square sandbox pass are in `design/SECURE-CARD-FLOW.md`). Verify Square's webhook signature scheme against their SDK helper in the sandbox first.
 3. **The secret address.** It is no longer in `edition.js`. It lives in the database and the server releases it 3 hours before doors, on a tap, for 45 seconds, under a live watermark. The demo venue (a real museum used as a stand-in) lives only in `site/assets/js/lr-api-mock.js`: remove the mock and demo-clock script tags from `pay.html` and `door.html` before real tickets.
 4. **Seats.** `seatsLeft` is `null`, so no count is shown. Wire it to real inventory or leave it off. Do not show a made-up number.
-5. **Indexing.** Remove `<meta name="robots" content="noindex">` from `site/index.html` and `site/pay.html` when ready to be found.
+5. **Indexing.** The build sets it per page from `tools/site-config.json` (`index: true/false`). Today the home page, `/concepts/`, the design documents and the plain pages are indexable; the checkout and door tool are not. For real events, set the live edition's page as the only indexable one and add an event description.
 6. **Check on a phone.** The pinned scroll over a collapsing mobile browser bar and WebGL frame rate on a mid-range phone are the two untested risks.
 
 ## The secure card flow
@@ -28,6 +28,16 @@
 - `concepts/index.html`: five live previews (laptop or phone), a skin switcher, **Generate customer card** per concept and for all five, a favorite, a second choice and a note, with Copy, Email and Share. Nothing is sent anywhere: the pick lives in the browser and in the message the client copies. Set `PICK_TO` at the top of the script to pre-address the "Email my pick" button (leave it empty in a public repo if you do not want your address published).
 - `concepts/review.html?skin=N`: the real hero with a skin switcher (buttons, arrow keys, or 1 to 5). Switching swaps the edition in place via `LR.hero.mount()` / `destroy()` and keeps the scroll position, so skins compare at the same beat.
 - `concepts/gallery.html`: the simple link gallery (`python3 tools/build_gallery.py repo`).
+
+## Website plumbing (what the build adds)
+
+`python3 tools/build_site.py` (the Pages workflow runs it) assembles the site and adds to every page: share tags with a 1200x630 image, a canonical link, icons and a web manifest, a robots rule, a referrer policy and a **Content Security Policy**. It also writes `sitemap.xml`, `robots.txt`, `security.txt` and a human `sitemap.html`. `python3 tools/check_site.py` then fails the deploy on a missing policy, an inline script the policy does not cover, anything loading from another website, a broken link, a sitemap that disagrees with the noindex rules, an expiring `security.txt`, or a real artist name.
+
+- **Adding a script to a page:** inline scripts are allowed by hash and the build recomputes it, so nothing to do. **Adding a third-party script, font or API:** it will be blocked on purpose. Put its address in `connect_src_extra` (for an API such as Supabase) in `tools/site-config.json`, and for anything else decide whether you really want it.
+- **A custom domain** (worth having for a portfolio): set the `SITE_URL` secret or edit `base_url`. Crawlers only read `robots.txt` and `security.txt` at the root of a host, so on the `github.io/<repo>/` address those two are written but ignored; on your own domain they work. A host that can send headers can use `tools/hosting/_headers`.
+- **Search visibility:** submit `sitemap.xml` in Google Search Console once the site is on its final address.
+- **Share previews:** Facebook caches a link's preview. After changing a title, description or image, paste the link into Facebook's Sharing Debugger and press "Scrape Again". Regenerate the images with `node tools/make_share_assets.js`.
+- **Tests:** `node tools/qa/site-meta.js <url>` (every page, the policy is enforced, no requests to other sites), plus the suites in `tools/qa/README.md`.
 
 ## Running the night
 

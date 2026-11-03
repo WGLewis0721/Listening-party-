@@ -13,6 +13,7 @@
   var params = new URLSearchParams(location.search), embed = /[?&]embed=1/.test(location.search);
   var back = params.get('back');
   var homeHref = (back && /^(\.\.?\/)[\w\-.\/?=&%]*$/.test(back)) ? back : './' + (embed ? '?embed=1' : '');
+  var about = (function () { try { return new URL('../../', document.currentScript.src).href.replace(/site\/$/, ''); } catch (e) { return './'; } })();     // the plain pages (privacy, terms…) live at the site root, whether this page is the root copy, /site/ or a concept
   var SK = 'lr:pay:' + E.slug;
   var S = { rid: null, tok: null, v: null, qty: 2, revealing: null, polling: null, lastStep: null, lastPhase: null, busy: false };
 
@@ -58,7 +59,7 @@
       '<div class="row"><span id="sq-line"></span><b id="sq-tot"></b></div><p>The real one is Square’s own page: you pay with a card, Apple Pay or Google Pay. We never see your card.</p>' +
       '<button class="btn btn--block" id="sq-ok" type="button">Pay (demo)</button><button class="btn alt btn--block" id="sq-no" type="button">Card declined (demo)</button><button class="btn alt btn--block" id="sq-x" type="button">Go back</button></div></div></div>' +
       '<p class="sr" id="live" aria-live="polite"></p>' +
-      '<footer class="foot"><span>' + esc(E.footer.left) + ' ' + esc(A.notice || '') + '</span><span>' + E.footer.right + '</span></footer>';
+      '<footer class="foot"><span>' + esc(E.footer.left) + ' ' + esc(A.notice || '') + '</span><span>' + E.footer.right + '</span><nav class="foot-links" aria-label="About this site"><a href="' + about + 'privacy.html">Privacy</a> · <a href="' + about + 'terms.html">Terms</a> · <a href="' + about + 'accessibility.html">Accessibility</a> · <a href="' + about + 'sitemap.html">Site map</a></nav></footer>';
   }
   build();
   var $ = function (q, el) { return (el || root).querySelector(q); };

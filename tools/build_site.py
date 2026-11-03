@@ -38,6 +38,8 @@ def assemble():
     ign = shutil.ignore_patterns('.DS_Store')
     shutil.copytree(os.path.join(ROOT, 'site'), OUT, ignore=ign)
     shutil.copytree(os.path.join(ROOT, 'site'), os.path.join(OUT, 'site'), ignore=ign)
+    for f in ('404.html', 'privacy.html', 'terms.html', 'accessibility.html'):          # the plain pages live once, at the root
+        if os.path.exists(os.path.join(OUT, 'site', f)): os.remove(os.path.join(OUT, 'site', f))
     shutil.copytree(os.path.join(ROOT, 'concepts'), os.path.join(OUT, 'concepts'), ignore=ign)
     os.makedirs(os.path.join(OUT, 'design'), exist_ok=True)
     for f in os.listdir(os.path.join(ROOT, 'design')):

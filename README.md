@@ -6,7 +6,8 @@ A monthly listening party for Montgomery, as a one-page, scroll-driven site. One
 - **Client review site:** `concepts/` (published at `/concepts/`). One page where a client previews all five concepts live, flips between skins with a switcher that keeps their scroll position, generates the customer card for any concept (or all five), and picks a favorite and a second choice. `concepts/review.html` is the full-screen version with the skin switcher.
 - **Secure card flow, built for people who have no time to be taught:** a guest types a name and email and taps Pay; the card unlocks when Square confirms; 3 hours before doors the card shows "Show the address" (one tap, watermarked, with Open in Maps); at doors a big code appears. The door is one huge Scan button and a green, yellow or red answer, with find-by-name as the backup. A screenshot of the address does not get anyone in. `design/SECURE-CARD-FLOW.md` (includes a 15-second briefing for door volunteers), `site/door.html`, and the server in `server/`.
 - **Design work:** `design/` has the brand boards, wireframes, requirements map, UX audit and research.
-- **Tools:** `tools/` has the gallery and docs builders and the QA scripts.
+- **Website plumbing:** `tools/build_site.py` adds share tags, a sitemap, `robots.txt`, `security.txt` and a Content Security Policy to every page; `tools/check_site.py` blocks a deploy that breaks them. Plain pages: privacy, terms, accessibility, a site map and a 404. See `SECURITY.md`.
+- **Tools:** `tools/` has the gallery and docs builders, the site build and the QA scripts.
 
 Everything artist-related here is **fictional**. Replace the DJ, the set and the venue in `edition.js` before promoting a real night.
 

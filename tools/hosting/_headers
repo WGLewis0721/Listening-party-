@@ -1,0 +1,17 @@
+# Security headers for a host that can send them (Netlify, Cloudflare Pages). GitHub Pages cannot, so this file is NOT published there:
+# copy it into the published folder (_site/) when you move to such a host. The Content Security Policy in each page's <meta> tag keeps working
+# and combines with these (the browser enforces both).
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: frame-ancestors 'self'
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+
+# Short caching: the asset files are not fingerprinted, so a long cache would leave visitors on old code after a deploy.
+/assets/*
+  Cache-Control: public, max-age=3600
+/*.png
+  Cache-Control: public, max-age=86400

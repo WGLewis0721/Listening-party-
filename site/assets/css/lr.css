@@ -419,3 +419,8 @@ noscript .ns{padding:40px var(--pad);font-size:1.1rem}
 .tk[data-phase="doors"] .tk-in{display:flex;flex-direction:column}
 .tk[data-phase="doors"] .tk-qrwrap{order:-1;margin-bottom:6px}
 .tk[data-phase="doors"] .tk-meta,.tk[data-phase="doors"] .tk-lines{display:none}
+
+.foot .foot-links{flex-basis:100%}.foot .foot-links a{color:var(--ink);display:inline-block;padding:10px 2px}
+
+/* the footer must paint above the pay page's fixed artwork layers (it was underneath, so the demo notice and links were invisible in a real window) */
+.pay>.foot{position:relative;z-index:5;padding-bottom:96px}       /* room above the demo clock button, which floats at the bottom left */

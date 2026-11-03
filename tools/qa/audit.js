@@ -4,7 +4,7 @@ const BASE = process.env.LR_BASE || 'http://localhost:8800';
 const PAGES = [
   ['01 Quiet Spectra', '/site/'], ['02 LED Stage', '/concepts/02-led-stage/'], ['03 Golden Hour', '/concepts/03-golden-hour/'],
   ['04 Chrome Disco', '/concepts/04-chrome-disco/'], ['05 Brass Night', '/concepts/05-brass-night/']];
-const VPS = [[390, 844], [820, 1180], [1024, 768], [1440, 900]];
+const VPS = [[390, 844], [820, 1180], [1024, 768], [1366, 650], [1440, 900]];     // 1366x650 = a typical laptop with the browser bars showing
 const isVis = `(e)=>{const c=getComputedStyle(e);return c.visibility!=='hidden'&&parseFloat(c.opacity)>0.05&&c.display!=='none'}`;
 const out = {};
 (async () => {
