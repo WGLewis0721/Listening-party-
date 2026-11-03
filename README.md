@@ -4,7 +4,7 @@ A monthly listening party for Montgomery, as a one-page, scroll-driven site. One
 
 - **Live site:** `site/` (Pages deploys it from `main`). A fictional DJ, Nova Vale, in the Quiet Spectra skin (Mirror Finish tokens).
 - **Client review site:** `concepts/` (published at `/concepts/`). One page where a client previews all five concepts live, flips between skins with a switcher that keeps their scroll position, generates the customer card for any concept (or all five), and picks a favorite and a second choice. `concepts/review.html` is the full-screen version with the skin switcher.
-- **Secure card flow:** hold seats, pay with Square, then unlock. The address never reaches the browser until 3 hours before doors, behind a hold-to-reveal and a live watermark; a rotating code and a door check mean a screenshot does not get anyone in. `design/SECURE-CARD-FLOW.md`, `site/door.html`, and the server in `server/`.
+- **Secure card flow, built for people who have no time to be taught:** a guest types a name and email and taps Pay; the card unlocks when Square confirms; 3 hours before doors the card shows "Show the address" (one tap, watermarked, with Open in Maps); at doors a big code appears. The door is one huge Scan button and a green, yellow or red answer, with find-by-name as the backup. A screenshot of the address does not get anyone in. `design/SECURE-CARD-FLOW.md` (includes a 15-second briefing for door volunteers), `site/door.html`, and the server in `server/`.
 - **Design work:** `design/` has the brand boards, wireframes, requirements map, UX audit and research.
 - **Tools:** `tools/` has the gallery and docs builders and the QA scripts.
 

@@ -1,5 +1,5 @@
 // POST { rid, token } → the address, only if paid AND past T-3h AND under the reveal cap. STATUS: written, untested live.
-import { admin, authedTicket, effectiveState, ipHash, json, preflight, T, times } from "../_shared/util.ts";
+import { admin, authedTicket, effectiveState, ipHash, json, preflight, REVEAL_SECONDS, T, times } from "../_shared/util.ts";
 
 Deno.serve(async (req) => {
   const pre = preflight(req); if (pre) return pre;
@@ -11,5 +11,5 @@ Deno.serve(async (req) => {
   if (!gate.ok) return json({ ok: false, reason: gate.reason, revealsLeft: Math.max(0, ev.max_reveals - t.reveal_count) });
   const { data: n } = await sb.rpc("record_reveal", { p_ticket: t.id, p_ip_hash: await ipHash(req), p_ua: req.headers.get("user-agent") ?? "" });
   if (n == null) return json({ ok: false, reason: "limit", revealsLeft: 0 });                  // lost a race to the cap: the database decides
-  return json({ ok: true, address: `${ev.venue_name} · ${ev.venue_address}`, seconds: 20, revealsLeft: Math.max(0, ev.max_reveals - n) });
+  return json({ ok: true, address: `${ev.venue_name} · ${ev.venue_address}`, seconds: REVEAL_SECONDS, revealsLeft: Math.max(0, ev.max_reveals - n) });
 });

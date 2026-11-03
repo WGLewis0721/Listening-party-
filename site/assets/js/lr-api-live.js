@@ -11,6 +11,7 @@
     return j;
   }
   function eventId() { return E.event.id || (E.slug + '-ed' + E.series.edition); }
+  function doorHeaders() { return { 'x-door-key': (function () { try { return localStorage.getItem('lr:doorkey') || ''; } catch (e) { return ''; } })() }; }
   function ss(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { } }
   LR.apiLive = {
     mode: 'live', notice: '',
@@ -19,7 +20,8 @@
     startCheckout: async function (rid) { return { url: ss('lr:co:' + rid) }; },        // the page then leaves for Square; Square's signed webhook marks the order paid
     release: async function () { return { ok: true }; },                                // an unpaid hold simply expires after 30 minutes
     reveal: function (rid, tok) { return post('reveal', { rid: rid, token: tok }); },
-    doorVerify: function (payload) { return post('door-verify', { payload: payload }, { 'x-door-key': ss('lr:doorkey') || '' }); },
-    doorList: async function () { return []; }                                           // door list endpoint: next step
+    doorVerify: function (payload) { return post('door-verify', { payload: payload }, doorHeaders()); },
+    doorManual: function (ref) { return post('door-verify', { ref: ref }, doorHeaders()); },       // staff picked the name from the list
+    doorList: async function () { var j = await post('door-list', { event: eventId() }, doorHeaders()); return j.guests || []; }
   };
 })(window);

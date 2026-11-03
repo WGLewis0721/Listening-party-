@@ -15,60 +15,72 @@ th{font:700 12px/1.3 'JetBrains Mono Variable',monospace;letter-spacing:.1em;tex
 td:first-child{white-space:nowrap}
 </style></head><body><div class="wrap"><nav><a href="../concepts/index.html">&larr; All concepts</a></nav><h1>Secure card flow: Hold, Pay, Unlock</h1>
 <p>How a buyer gets a card, how the address stays secret, and what is real versus simulated today. Decisions: <strong>Square</strong> for payments, a <strong>public venue</strong>, and the address released <strong>3 hours before doors</strong>. The demo venue is the Montgomery Museum of Fine Arts, One Museum Drive, Montgomery, AL 36117, used purely as a stand-in. No event is scheduled there and it is not affiliated.</p>
-<h2>The flow</h2>
-<pre><code>1  Pick seats, name, email
-2  The server holds the seats for 30 minutes. A card appears LOCKED, with the buyer's name on it.
-3  &quot;Pay with Square&quot;: hand off to Square's hosted checkout (we never touch card data)
-4  Square's signed webhook, server to server, is the only thing that marks the order paid
-5  The browser returns to the SAME card and asks the server. The card flips to Paid
-6  An email carries a private link, never the address
-7  3 hours before doors the server releases the address, behind a hold-to-reveal, under a live watermark
-8  At doors: a door phrase appears, staff scan a rotating code and match the name
+<h2>The flow (what a guest sees)</h2>
+<pre><code>1  Type a name and an email, tap &quot;Pay $50.00&quot;           one button; the server quietly holds the seats for 30 minutes
+2  Pay on Square's page (card, Apple Pay, Google Pay)   we never see card data
+3  Come back to a card that says &quot;You're in&quot;            Square's signed confirmation (not the browser) is what unlocks it
+4  3 hours before doors the card shows &quot;Show the address&quot;   one tap, 45 seconds, watermarked, &quot;Open in Maps&quot; beside it
+5  At doors the card puts one big code at the top       &quot;Show this at the door&quot;; the screen stays awake
 </code></pre>
+<p>Every screen has one headline, one sentence and one obvious button. Anything else (save a picture, copy my link, get more seats) sits under <strong>More</strong>. A guest who loses the tab is rescued by the email link and by the card remembering them on the same phone.</p>
 <p><strong>Why not card first, then pay?</strong> A card that already contains the address means the secret was out before any money moved. The card is shown first <em>visually</em> (it builds commitment) but stays locked until Square confirms.</p>
 <h2>What a card shows, by state</h2>
 <div class="tw"><table>
 <thead>
 <tr>
 <th>State</th>
-<th>Card shows</th>
+<th>The one sentence</th>
+<th>The one button</th>
 <th>The server will give out</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Held</td>
-<td>Name, a 30-minute countdown, a locked address</td>
+<td>Reserve</td>
+<td>"Pay now and your card is ready right away. The exact address appears on your card 3 hours before doors."</td>
+<td>Pay $50.00</td>
 <td>Nothing secret</td>
 </tr>
 <tr>
-<td>Confirming</td>
-<td>"Confirming with Square", nothing unlocked</td>
+<td>Not paid yet (came back)</td>
+<td>"2 seats are saved for you." + a countdown</td>
+<td>Pay $50.00 (and a small "Cancel")</td>
+<td>Nothing secret</td>
+</tr>
+<tr>
+<td>Checking</td>
+<td>"Checking your payment…"</td>
+<td>none</td>
 <td>Nothing</td>
 </tr>
 <tr>
-<td>Paid, before T-3h</td>
-<td>The area, a rotating entry code, a countdown to the unlock</td>
-<td>The area. Refuses <code>reveal</code></td>
+<td>Paid, before the release</td>
+<td>"Your address will appear on this card on Thu, Nov 19 at 5:00 PM."</td>
+<td>Add to my calendar</td>
+<td>The area. Refuses the address</td>
 </tr>
 <tr>
 <td>Ready (T-3h)</td>
-<td>A hold-to-reveal button, 3 reveals</td>
-<td>The address, once per reveal</td>
+<td>"Your address is ready. Tap “Show the address” on your card."</td>
+<td>Show the address</td>
+<td>The address, once per tap</td>
 </tr>
 <tr>
 <td>Doors (T-30m)</td>
-<td>A door phrase, the live code</td>
-<td>Door phrase</td>
+<td>"Doors are open. Show the code on your card to the person at the door."</td>
+<td>none: the code is at the top of the card</td>
+<td>The live code</td>
 </tr>
 <tr>
 <td>Checked in</td>
-<td>"Checked in 8:07 PM"</td>
+<td>"You're checked in at 8:07 PM. Enjoy the night."</td>
+<td>none</td>
 <td>Nothing more</td>
 </tr>
 <tr>
-<td>Expired or released</td>
-<td>The seats went back on sale</td>
+<td>Expired or cancelled</td>
+<td>"Those seats were given back."</td>
+<td>Start over</td>
 <td>Nothing</td>
 </tr>
 </tbody>
@@ -95,9 +107,9 @@ td:first-child{white-space:nowrap}
 <td>Cannot hide it from the person it is shown to</td>
 </tr>
 <tr>
-<td>Hold to reveal</td>
-<td>Press and hold for 1s. Hides after 20s, when you switch tabs or when the page hides. 3 reveals</td>
-<td>Does not stop a screenshot during the 20s</td>
+<td>Tap to show, then hide</td>
+<td>One tap shows it for 45 seconds, then it hides, also when you switch tabs or leave the page. 5 views. "Open in Maps" means nobody has to read or copy it</td>
+<td>Does not stop a screenshot during the 45 seconds</td>
 </tr>
 <tr>
 <td>Live watermark</td>
@@ -105,27 +117,23 @@ td:first-child{white-space:nowrap}
 <td>Does not stop sharing; it makes sharing attributable</td>
 </tr>
 <tr>
-<td>Rotating entry code</td>
-<td>Changes every 30s, one use, bound to the name</td>
+<td>Code only at the door</td>
+<td>The entry code does not exist on the card until 30 minutes before doors, then it rotates every 30 seconds and works once</td>
 <td>A screenshot of the address still shows the address</td>
 </tr>
 <tr>
 <td>The door</td>
-<td>Entry needs a valid live code <strong>and</strong> the name on the list</td>
+<td>Entry needs a valid live code <strong>and</strong> the guest's name on the screen</td>
 <td>Knowing the address alone gets nobody in</td>
 </tr>
 <tr>
-<td>Door phrase</td>
-<td>Appears at T-30m on the card only</td>
-<td>Can still be passed along by a buyer</td>
-</tr>
-<tr>
 <td>Address-free exports</td>
-<td>The saved card image and the calendar file carry the area only</td>
+<td>The saved card picture and the calendar file carry the area only</td>
 <td>Buyers can still screenshot the live card</td>
 </tr>
 </tbody>
 </table></div>
+<p>A hold-to-reveal gesture was tried and removed: it had to be explained, and it added almost nothing against a screenshot, which is the real threat. The limit moved from 3 views of 20 seconds to 5 views of 45 seconds for the same reason: a guest who is lost and out of views is a call the host cannot take on the night. The host can raise or lower it per event (<code>events.max_reveals</code>).</p>
 <p><strong>Policy matters as much as pixels.</strong> For a 60-seat, friends-of-friends room, a traceable leak is the strongest deterrent. Say in the terms that cards are personal, that reveals are logged, and what happens on a leak.</p>
 <h2>What is real and what is simulated</h2>
 <div class="tw"><table>
@@ -141,8 +149,16 @@ td:first-child{white-space:nowrap}
 <td><strong>Real and tested.</strong> 9 unit tests in <code>server/test/ticket-logic.test.js</code>, shared by the browser prototype and the server</td>
 </tr>
 <tr>
-<td>Hold, Pay, Unlock UI, hold-to-reveal, watermark, door page, exports</td>
-<td><strong>Real UI, tested end to end.</strong> 33 browser checks on three skins plus phone width, run repeatedly</td>
+<td>Pay, locked card, tap to show, watermark, door page, exports</td>
+<td><strong>Real UI, tested end to end.</strong> <code>tools/qa/secure-flow.js</code>: about 45 browser checks, on desktop, a phone width and other skins</td>
+</tr>
+<tr>
+<td>Door camera</td>
+<td><strong>Tested with a fake phone camera</strong> filming a real guest's QR (<code>tools/qa/door-camera.js</code>): reads it, turns green, does not double-flash, closes cleanly, and degrades to the name list. Chromium has no built-in QR detector, so this covers the jsQR path (older iPhones); newer phones use the built-in detector, which is untested here</td>
+</tr>
+<tr>
+<td>"Does anyone have to explain this?"</td>
+<td><strong>Checked by a script</strong> (<code>tools/qa/plain-words.js</code>): every screen has 1 to 5 things to tap, no technical words, reading grade about 1 to 2, and the one action is on a phone's first screen</td>
 </tr>
 <tr>
 <td>The address never being in the page, the public config, the exports or the calendar file</td>
@@ -154,10 +170,10 @@ td:first-child{white-space:nowrap}
 </tr>
 <tr>
 <td>Database: seat holds, no oversell, idempotent payments, late-payment refund flag, atomic reveal cap, one check-in</td>
-<td><strong>Tested on real PostgreSQL 16</strong>: 27 checks in <code>server/test/sql_test.py</code>, including 8 parallel buyers for 1 seat and 6 parallel reveals against a cap of 3</td>
+<td><strong>Tested on real PostgreSQL 16</strong>: 30 checks in <code>server/test/sql_test.py</code>, including 8 parallel buyers for 1 seat, 6 parallel reveals against a cap of 5, and one check-in per ticket whether scanned or picked by name</td>
 </tr>
 <tr>
-<td>Edge functions (reserve, square-webhook, ticket, reveal, door-verify)</td>
+<td>Edge functions (reserve, square-webhook, ticket, reveal, door-verify, door-list)</td>
 <td><strong>Written and type-checked</strong> with Deno. Never deployed or run</td>
 </tr>
 <tr>
@@ -165,7 +181,7 @@ td:first-child{white-space:nowrap}
 <td><strong>Written from Square's docs, not run</strong> against a sandbox or live account</td>
 </tr>
 <tr>
-<td>Email, camera scanning, real phones, screen readers</td>
+<td>Email, real phones, screen readers, the built-in QR detector path</td>
 <td><strong>Not built or not tested</strong></td>
 </tr>
 <tr>
@@ -179,7 +195,7 @@ td:first-child{white-space:nowrap}
 <li><strong>Square Developer Console:</strong> create an application. In the sandbox note the <strong>access token</strong> and <strong>location ID</strong>.</li>
 <li><strong>Supabase:</strong> create a project. Run <code>server/supabase/migrations/0001_init.sql</code>, then insert your event (the commented example at the bottom). The real address goes in <code>venue_address</code>, nowhere else.</li>
 <li><strong>Secrets:</strong> set the values below with <code>supabase secrets set</code>. Never commit them or paste them into chat.</li>
-<li><strong>Deploy:</strong> <code>supabase functions deploy reserve ticket reveal door-verify</code> and <code>supabase functions deploy square-webhook --no-verify-jwt</code> (Square cannot send a Supabase JWT).</li>
+<li><strong>Deploy:</strong> <code>supabase functions deploy reserve ticket reveal door-verify door-list</code> and <code>supabase functions deploy square-webhook --no-verify-jwt</code> (Square cannot send a Supabase JWT).</li>
 <li><strong>Webhook:</strong> in Square, add a subscription to <code>payment.updated</code> with the notification URL set exactly to <code>SQUARE_WEBHOOK_URL</code> (a trailing slash changes the signature). Copy its signature key into <code>SQUARE_WEBHOOK_SIGNATURE_KEY</code>.</li>
 <li><strong>Site:</strong> in <code>edition.js</code> set <code>payment: { provider: 'square', mode: 'live', apiBase: 'https://&lt;project&gt;.supabase.co/functions/v1' }</code>, and load the real address into the database.</li>
 <li><strong>Test in the sandbox end to end</strong>, including a declined card, a refresh mid-payment and a double webhook. Then switch <code>SQUARE_BASE</code> to production.</li>
@@ -226,14 +242,26 @@ td:first-child{white-space:nowrap}
 </tr>
 </tbody>
 </table></div>
+<h2>Running the night (for the host)</h2>
+<p>You do not need to train anyone. This is the whole briefing.</p>
+<p><strong>Guests</strong> need nothing from you. If someone is lost: "Open the link in your email, tap Show the address, then Open in Maps."</p>
+<p><strong>Door volunteers</strong> (read this out loud once, 15 seconds):</p>
+<ol>
+<li>Open the door link on your phone. (You do this once; the phone remembers it.)</li>
+<li>Tap the big <strong>Scan a guest</strong> button and point the phone at the guest's screen.</li>
+<li><strong>Green</strong> with a name: let them in. <strong>Yellow</strong>: they are already in. <strong>Red</strong>: do not let them in yet; look the name up in the list below.</li>
+<li>No phone or dead battery? Type part of their name, tap <strong>Let in</strong>, check their name or ID, tap <strong>Yes, let them in</strong>.</li>
+</ol>
+<p>The door link is <code>door.html#key=&lt;DOOR_KEY&gt;</code> on your site. Send it to each volunteer by text. The key leaves the address bar as soon as the page opens, and it stays on that phone only. To cut someone off, change <code>DOOR_KEY</code> and send the new link to the others.</p>
+<p>Anyone checked in by name is logged as such (<code>checked_in_via = 'name'</code>), so you can see afterwards who was let in by hand.</p>
 <h2>Before real tickets</h2>
 <ul>
 <li><strong>Verify Square's webhook signature scheme.</strong> Square's own page does not spell out how the URL and body are combined. The code signs <code>notificationUrl + rawBody</code> as third-party guides describe. Confirm it against Square's SDK helper in the sandbox before relying on it.</li>
 <li><strong>Refunds and leaks:</strong> write the policy. A payment that arrives after the hold lapsed and the seat was resold is flagged <code>paid_review</code> for a human refund.</li>
 <li><strong>Privacy:</strong> reveals are logged with a salted IP hash. Say so in the terms.</li>
 <li><strong>Rate limits and abuse:</strong> add rate limiting at the edge on <code>reserve</code> and <code>reveal</code>.</li>
-<li><strong>Accessibility:</strong> hold-to-reveal has a keyboard path (hold Space or Enter), a "reveal with a tap" option and a screen-reader path. Test with a real screen reader.</li>
+<li><strong>Accessibility:</strong> the address and door screens are plain buttons with live announcements. Test with a real screen reader.</li>
 <li><strong>Real devices:</strong> the pinned scroll, the hold gesture and the watermark need phone testing.</li>
-<li><strong>Door:</strong> camera scanning (<code>BarcodeDetector</code> or a JS decoder) is the next build. The verification it calls already exists.</li>
+<li><strong>Door on a real phone:</strong> the camera path is tested with a fake feed. Try it once on an iPhone and an Android in the dark, in a doorway, before the night.</li>
 <li><strong>Transfers:</strong> "Send my seat" (bump <code>token_version</code>, rebind the name) turns sharing into a managed transfer instead of a leak.</li>
 </ul></div></body></html>

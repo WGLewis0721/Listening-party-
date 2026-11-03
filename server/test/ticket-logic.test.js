@@ -54,11 +54,9 @@ test('Square signature: matches an independent HMAC, and any change breaks it', 
   assert.equal(await T.squareSignatureOk('wrong', url, body, want), false);
   assert.equal(await T.squareSignatureOk(key, url, body, ''), false);
 });
-test('tokens and door phrase', async () => {
+test('tokens', async () => {
   const a = T.newToken(), b = T.newToken(); assert.notEqual(a, b); assert.match(a, /^[A-Za-z0-9_-]{22}$/);
   assert.match(await T.sha256Hex('x'), /^[0-9a-f]{64}$/);
-  const p = await T.doorPhrase(SECRET, 'ed01'); assert.match(p, /^[a-z]+ [a-z]+$/); assert.equal(p, await T.doorPhrase(SECRET, 'ed01'));
-  assert.notEqual(p, await T.doorPhrase(SECRET, 'ed02'));
 });
 
 test('card token: stable per ticket and version, different otherwise, revocable', async () => {

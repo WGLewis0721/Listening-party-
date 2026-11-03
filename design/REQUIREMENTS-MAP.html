@@ -94,10 +94,10 @@ td:first-child{white-space:nowrap}
 <tr>
 <td>P9</td>
 <td>Location revealed only to buyers</td>
-<td>Hold → Pay → Unlock. The address is not in the page, the config, the email or the exports; the server releases it only after Square confirms payment and only from 3 hours before doors, behind a hold-to-reveal under a live watermark. Reveals are capped and logged. The door needs a rotating code and the name on the list</td>
+<td>Hold → Pay → Unlock. The address is not in the page, the config, the email or the exports; the server releases it only after Square confirms payment and only from 3 hours before doors, on a tap, for 45 seconds, under a live watermark. Views are capped and logged. The door needs a rotating code and the name on the list</td>
 <td><code>lr-pay.js</code>, <code>lr-api-*.js</code>, <code>server/</code></td>
 <td>Peak-End, Doherty, honesty about limits</td>
-<td>33 browser checks on three skins and phone width; 27 SQL checks on PostgreSQL 16</td>
+<td><code>tools/qa/secure-flow.js</code> on all five skins at desktop and phone width; 30 SQL checks on PostgreSQL 16</td>
 </tr>
 <tr>
 <td>B1</td>
@@ -173,6 +173,7 @@ td:first-child{white-space:nowrap}
 </tr>
 </tbody>
 </table></div>
+<p>| B10 | Usable by anyone, with no explanation, while the host is busy | One headline, one sentence and one button per screen; everything else under <strong>More</strong>. A single <strong>Pay</strong> button (the hold happens behind it). The address is one tap, with <strong>Open in Maps</strong> beside it. The entry code appears only at doors, at the top of the card. The door page is one huge <strong>Scan a guest</strong> button and a green, yellow or red answer, with find-by-name as the backup. Plain words throughout | <code>lr-pay.js</code>, <code>lr-door.js</code>, <code>lr.css</code> | Hick (few choices), Fitts (big targets, on the first phone screen), Jakob (looks like every checkout), Postel (forgiving: name search when a phone is dead) | <code>tools/qa/plain-words.js</code> (no jargon, 1 to 5 things to tap, reading grade 1 to 2), <code>tools/qa/door-camera.js</code> (fake camera reads a real QR), first-screen assertions at 390 by 664 |</p>
 <h2>What the funnel looks like</h2>
 <div class="tw"><table>
 <thead>

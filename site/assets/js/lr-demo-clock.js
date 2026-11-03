@@ -11,7 +11,7 @@
     '<p>Prototype only. Jump the simulated server clock to see the staged release. The real site has no such control.</p>' +
     '<div class="now" id="dc-now" aria-live="off"></div><p id="dc-ev"></p>' +
     '<button type="button" data-j="unlock">Jump: address unlocks (3h before doors)</button>' +
-    '<button type="button" data-j="phrase">Jump: door phrase appears (30m before)</button>' +
+    '<button type="button" data-j="phrase">Jump: the door code appears (30m before)</button>' +
     '<button type="button" data-j="doors">Jump: doors open</button>' +
     '<button type="button" data-j="hour">Forward one hour</button>' +
     '<button type="button" data-j="real">Back to real time</button>' +

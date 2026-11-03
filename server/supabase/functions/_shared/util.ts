@@ -5,6 +5,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // deno-lint-ignore no-explicit-any
 export const T: any = (globalThis as any).LRTicket;
 export const env = (k: string, d?: string) => Deno.env.get(k) ?? d ?? "";
+export const REVEAL_SECONDS = 45;                       // how long a revealed address stays on screen
 export const admin = () => createClient(env("SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"), { auth: { persistSession: false } });
 
 const cors = () => ({ "Access-Control-Allow-Origin": env("SITE_ORIGIN", "*"), "Access-Control-Allow-Headers": "content-type, x-door-key", "Access-Control-Allow-Methods": "POST, OPTIONS", "Vary": "Origin" });

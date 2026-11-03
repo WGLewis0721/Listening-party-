@@ -117,18 +117,24 @@ Defects found on the way: the device toggle read progress after the resize and d
 
 | Check | Result |
 | --- | --- |
-| 33 end-to-end browser checks, repeated three times, on the base skin | All pass each time |
-| Same flow on two more skins, and at 390px wide | All pass |
-| The address is absent from the page before payment, while held, after payment (before T-3h), after the tab hides, after the reveals are used, and after a reload | Asserted at each point |
-| The address is absent from the public edition config, the saved card image and the calendar file | Asserted (the image's drawn text is captured and checked) |
-| The server refuses an early reveal, a wrong token and a 4th reveal even when the UI is bypassed | Pass |
-| A quick tap does not reveal; a one-second hold does; hiding the tab removes the address from the DOM | Pass |
-| Door: admits the paid name, refuses a second scan, refuses a code 5 minutes old, refuses a made-up code; the card flips to Checked in by itself | Pass |
-| SQL on PostgreSQL 16: 8 parallel buyers for 1 seat, expiry, idempotent payment, resold-seat refund flag, 6 parallel reveals against a cap of 3, one check-in, anon cannot read or call anything | 27 of 27 |
+| About 45 end-to-end browser checks (`tools/qa/secure-flow.js`), on the base skin at desktop and at 390 by 664 (a phone with the browser bars showing), and on all four other skins at 390 by 664 | All pass |
+| The address is absent from the page before payment, while saved, after payment (before the release time), after the tab hides, after the views are used, and after a reload | Asserted at each point |
+| The address is absent from the public edition config, the saved card picture and the calendar file | Asserted (the picture's drawn text is captured and checked) |
+| The server refuses an early reveal, a wrong token and a 6th view even when the UI is bypassed | Pass |
+| One tap shows the address with a watermark and an Open in Maps link; hiding the tab removes both from the DOM | Pass |
+| The entry code does not exist on the card before doors, then sits at the top of the card | Pass |
+| Door page: green with the name, yellow for a second scan, red for a code 5 minutes old and for a made-up code; find by name asks once and cannot check the same guest in twice; the card flips to Checked in by itself | Pass |
+| Door camera (`tools/qa/door-camera.js`): a fake phone camera films a real guest's QR; the screen turns green with the name, does not flash a second answer while the guest keeps the phone up, closes and releases the camera, and with no camera says so and keeps the name list | Pass (jsQR path; the built-in detector path is untested here) |
+| "Does anyone have to explain this?" (`tools/qa/plain-words.js`): every screen has 1 to 5 things to tap, no technical words, a reading grade of 1 to 2 | Pass |
+| First screen on a phone (390 by 664): Pay button, the card after paying, Show the address, the door code, the door's Scan button | All visible without scrolling, on all five skins |
+| Full layout audit with the door page added: no overflow, no text under 12px, no tap target under 44px, no console errors | Clean |
+| SQL on PostgreSQL 16: 8 parallel buyers for 1 seat, expiry, idempotent payment, resold-seat refund flag, 6 parallel views against a cap of 5, one check-in by scan or by name, anon cannot read or call anything | 30 of 30 |
 | Shared logic (rotating code, schedule, reveal rules, Square signature, tokens) | 9 of 9 |
-| Edge functions | Type-check clean with Deno; never deployed |
+| Edge functions (six) | Type-check clean with Deno; never deployed |
 
-Defects found on the way: the 30-second code refresh rebuilt the hold-to-reveal button and would have cancelled a hold in progress (now idempotent); the demo's "scan the latest card" picked a seeded guest because of the jumped clock (simulator fix); and the status chip wrapped the card header at 390px (shorter labels).
+Defects found on the way: the 30-second code refresh rebuilt the reveal button under the guest's finger (now idempotent); the demo's "scan the latest card" picked a seeded guest because of the jumped clock (simulator fix); and the status chip wrapped the card header at 390px (shorter labels).
+
+**The simplification pass** (a request to make it usable by anyone with no explanation) removed: the separate Hold and Pay steps (one Pay button now), the four-step timeline, the door phrase, the hold-to-reveal gesture and its "can't hold?" checkbox, the entry code before doors, five secondary buttons (now under More), and the door page's "paste a code" box (now a camera and a name list). Found by the new checks: on a phone the Pay button was 822 to 865px down a 844px screen, which on a real browser with its bars would be well below the fold; it is now at 560px on a 664px screen on every skin.
 
 ## Motion safety
 
@@ -141,5 +147,5 @@ Nothing flashes. The fastest repeating motion is the final button's 2.2s pulse r
 3. **200% zoom and `prefers-contrast`** are untested.
 4. **Keyboard reach.** The ticket button is hidden until the last beat, so a keyboard user reaches it with the "Skip to reserve" link or the Ticket chapter. This is deliberate and works, but is worth a real user test.
 5. **Payment.** Simulated. The Square server is written, type-checked and database-tested but never run against Square: do a sandbox pass and verify the webhook signature scheme with Square's SDK helper. The address is no longer in any file; it must be loaded into the database.
-7. **Hold-to-reveal on real devices and with a screen reader** is untested. There is a keyboard path, a tap option and a screen-reader path.
+7. **The door on real phones**, in the dark, in a doorway, on both iPhone and Android, and the built-in QR detector path. The camera is tested with a fake feed only. Also untested: the address and door screens with a screen reader.
 6. **Fabricated scarcity.** `seatsLeft` is `null`, so no count is shown. Wire it to real inventory or leave it off.

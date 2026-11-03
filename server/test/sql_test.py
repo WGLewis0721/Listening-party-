@@ -62,8 +62,8 @@ try:
     hold('e8', 1, 'LR-ED01-CCCCCC'); psql("update public.tickets set state='paid', paid_at=now() where ref='LR-ED01-CCCCCC'")
     tid = psql("select id from public.tickets where ref='LR-ED01-CCCCCC'")[1]
     with cf.ThreadPoolExecutor(6) as ex: rr = list(ex.map(lambda i: psql(f"select public.record_reveal('{tid}','h','ua')", role='service_role')[1], range(6)))
-    granted = [x for x in rr if x not in ('', None)]; ok(len(granted) == 3, f'6 parallel reveals, cap 3: exactly {len(granted)} granted (must be 3)')
-    ok(psql(f"select count(*) from public.reveals where ticket_id='{tid}'")[1] == '3', 'exactly 3 reveals are logged')
+    granted = [x for x in rr if x not in ('', None)]; ok(len(granted) == 5, f'6 parallel reveals, cap 5: exactly {len(granted)} granted (must be 5)')
+    ok(psql(f"select count(*) from public.reveals where ticket_id='{tid}'")[1] == '5', 'exactly 5 reveals are logged')
     psql("update public.tickets set state='held' where ref='LR-ED01-CCCCCC'"); ok(psql(f"select public.record_reveal('{tid}','h','ua')", role='service_role')[1] == '', 'an unpaid ticket can never reveal')
 
     # 7 door: one check-in per ticket
@@ -71,6 +71,11 @@ try:
     c1 = psql("select result from public.check_in('LR-ED01-CCCCCC')", role='service_role')[1]; c2 = psql("select result from public.check_in('LR-ED01-CCCCCC')", role='service_role')[1]
     ok((c1, c2) == ('ok', 'already'), f"check-in works once, then 'already' ({c1}, {c2})")
     ok(psql("select result from public.check_in('LR-ED01-ZZZZZZ')", role='service_role')[1] == 'notfound', 'an unknown code is not found')
+    ok(psql("select checked_in_via from public.tickets where ref='LR-ED01-CCCCCC'")[1] == 'scan', 'a scanned check-in is logged as scan')
+    hold('e8', 1, 'LR-ED01-DDDDDD'); psql("update public.tickets set state='paid', paid_at=now() where ref='LR-ED01-DDDDDD'")
+    m1 = psql("select result from public.check_in('LR-ED01-DDDDDD','name')", role='service_role')[1]; m2 = psql("select result from public.check_in('LR-ED01-DDDDDD','name')", role='service_role')[1]
+    ok((m1, m2) == ('ok', 'already'), f"picking a name checks in once, then 'already' ({m1}, {m2})")
+    ok(psql("select checked_in_via from public.tickets where ref='LR-ED01-DDDDDD'")[1] == 'name', 'a name check-in is logged as name (so you can see who was let in by hand)')
 
     # 8 the browser's database roles can read and call nothing
     for role in ('anon', 'authenticated'):

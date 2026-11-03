@@ -30,7 +30,7 @@
   }
 
   /* ───── release schedule ─────
-     locked  = paid, address not due yet · ready = address released (T-3h by default) · doors = door phrase visible (T-30m) · over = after the event */
+     locked  = paid, address not due yet · ready = address released (T-3h by default) · doors = the entry code shows on the card (T-30m) · over = after the event */
   function eventTimes(ev, rel) {
     rel = rel || {};
     var start = Date.parse(ev.start), end = Date.parse(ev.start.slice(0, 11) + ev.end + ':00' + ev.start.slice(19));
@@ -51,14 +51,12 @@
     return { ok: true };
   }
 
-  /* ───── tokens and door phrase ───── */
+  /* ───── tokens ───── */
   function newToken() { var b = new Uint8Array(16); g.crypto.getRandomValues(b); return b64url(b); }
   async function sha256Hex(s) { var h = new Uint8Array(await subtle.digest('SHA-256', enc.encode(s))), o = ''; for (var i = 0; i < h.length; i++) o += (h[i] < 16 ? '0' : '') + h[i].toString(16); return o; }
   /* a buyer's card token = HMAC(serverSecret, ticketId:version). The server can re-issue the magic link any time without storing the raw token;
      bump the version to revoke it (for a transfer or a leak). */
   async function macToken(secret, ticketId, version) { return b64url(await hmacBytes(secret, 'tok|' + ticketId + ':' + (version || 0))); }
-  var WORDS = ['amber', 'velvet', 'harbor', 'copper', 'lantern', 'static', 'marble', 'cedar', 'ember', 'quartz', 'willow', 'saffron', 'cobalt', 'meadow', 'ivory', 'thunder', 'juniper', 'indigo', 'canyon', 'pewter', 'garnet', 'monsoon', 'sparrow', 'tallow', 'orchid', 'granite', 'driftwood', 'mercury', 'paprika', 'hollow', 'zephyr', 'cinder'];
-  async function doorPhrase(secret, eventId) { var h = await hmacBytes(secret, 'door|' + eventId); return WORDS[h[0] % WORDS.length] + ' ' + WORDS[h[1] % WORDS.length]; }
 
   /* ───── Square webhook ─────
      header x-square-hmacsha256-signature = base64( HMAC-SHA256( signatureKey, notificationUrl + rawBody ) ).
@@ -67,7 +65,7 @@
   async function squareSignature(key, url, rawBody) { return b64(await hmacBytes(key, String(url) + String(rawBody))); }
   async function squareSignatureOk(key, url, rawBody, header) { if (!header) return false; return ctEq(await squareSignature(key, url, rawBody), header); }
 
-  var api = { STEP_S: STEP_S, qrStep: qrStep, qrPayload: qrPayload, verifyQr: verifyQr, eventTimes: eventTimes, phaseOf: phaseOf, canReveal: canReveal, newToken: newToken, macToken: macToken, sha256Hex: sha256Hex, doorPhrase: doorPhrase, squareSignature: squareSignature, squareSignatureOk: squareSignatureOk, ctEq: ctEq };
+  var api = { STEP_S: STEP_S, qrStep: qrStep, qrPayload: qrPayload, verifyQr: verifyQr, eventTimes: eventTimes, phaseOf: phaseOf, canReveal: canReveal, newToken: newToken, macToken: macToken, sha256Hex: sha256Hex, squareSignature: squareSignature, squareSignatureOk: squareSignatureOk, ctEq: ctEq };
   g.LRTicket = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : window);

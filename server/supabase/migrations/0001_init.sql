@@ -17,7 +17,7 @@ create table public.events (
   max_per_order        int  not null default 4,
   unlock_lead_min      int  not null default 180,           -- address released this long before starts_at
   door_phrase_lead_min int  not null default 30,
-  max_reveals          int  not null default 3,
+  max_reveals          int  not null default 5,
   venue_name           text not null,
   venue_address        text not null,                       -- the secret
   venue_area           text not null,                       -- the neighborhood, shown from purchase
@@ -39,6 +39,7 @@ create table public.tickets (
   paid_at           timestamptz,
   reveal_count      int  not null default 0,
   checked_in_at     timestamptz,
+  checked_in_via    text,                       -- 'scan' (live code) or 'name' (staff picked the name from the list)
   created_at        timestamptz not null default now()
 );
 create index tickets_event_state on public.tickets (event_id, state);
@@ -113,14 +114,14 @@ begin
 end $$;
 
 -- ───── door: one check-in per ticket ─────
-create or replace function public.check_in(p_ref text) returns table (result text, name text, qty int, at timestamptz)
+create or replace function public.check_in(p_ref text, p_via text default 'scan') returns table (result text, name text, qty int, at timestamptz)
 language plpgsql security definer set search_path = public as $$
 declare t public.tickets%rowtype;
 begin
   select * into t from public.tickets where ref = p_ref for update;
   if not found or t.state <> 'paid' then return query select 'notfound'::text, null::text, null::int, null::timestamptz; return; end if;
   if t.checked_in_at is not null then return query select 'already'::text, t.name, t.qty, t.checked_in_at; return; end if;
-  update public.tickets set checked_in_at = now() where id = t.id;
+  update public.tickets set checked_in_at = now(), checked_in_via = case when p_via = 'name' then 'name' else 'scan' end where id = t.id;
   return query select 'ok'::text, t.name, t.qty, now();
 end $$;
 

@@ -9,8 +9,9 @@ supabase/migrations/0001_init.sql        tables, row level security, hold_seats 
 supabase/functions/reserve               hold seats, create the Square payment link
 supabase/functions/square-webhook        verify Square's signature, confirm the payment, mark paid, email the private link
 supabase/functions/ticket                the card's public view (never the address)
-supabase/functions/reveal                the address, only if paid AND past T-3h AND under the reveal cap
-supabase/functions/door-verify           verify the rotating code, check the guest in once (staff key)
+supabase/functions/reveal                the address, only if paid AND past T-3h AND under the view cap (5 by default, 45 seconds each)
+supabase/functions/door-verify           verify the rotating code (or a name picked from the list), check the guest in once (staff key)
+supabase/functions/door-list             the paid guest list for the door: names, seats, checked-in time (staff key)
 supabase/functions/_shared/              helpers; ticket-logic.js is a byte-identical copy of site/assets/js/lr-ticket.js
 test/ticket-logic.test.js                node unit tests for the shared logic
 test/sql_test.py                         runs the migration on real PostgreSQL and tests the money-adjacent rules, with concurrency
@@ -21,8 +22,8 @@ test/sql_test.py                         runs the migration on real PostgreSQL a
 | Check | Command | Result |
 | --- | --- | --- |
 | Shared logic (rotating code, schedule, reveal rules, Square signature, tokens, copy in sync) | `node --test server/test/ticket-logic.test.js` | 9 of 9 |
-| SQL on real PostgreSQL 16 (capacity, 8-way race for 1 seat, expiry, idempotent payment, oversold flag, reveal cap under 6-way race, one check-in, anon cannot read or call anything) | `PGHOST=… PGPORT=… python3 server/test/sql_test.py` | 27 of 27 |
-| Edge functions type-check | `deno check supabase/functions/<fn>/index.ts` | all 5 clean |
+| SQL on real PostgreSQL 16 (capacity, 8-way race for 1 seat, expiry, idempotent payment, oversold flag, view cap under 6-way race, one check-in by scan or by name, anon cannot read or call anything) | `PGHOST=… PGPORT=… python3 server/test/sql_test.py` | 30 of 30 |
+| Edge functions type-check | `deno check supabase/functions/<fn>/index.ts` | all 6 clean |
 
 Not verified: a deployed function, a real Square sandbox call, email delivery. Do the sandbox pass before anything else.
 
@@ -42,6 +43,6 @@ supabase db push
 supabase secrets set SQUARE_ACCESS_TOKEN=… SQUARE_LOCATION_ID=… SQUARE_BASE=https://connect.squareupsandbox.com \
   SQUARE_WEBHOOK_SIGNATURE_KEY=… SQUARE_WEBHOOK_URL=https://<ref>.supabase.co/functions/v1/square-webhook \
   TOKEN_SECRET=$(openssl rand -hex 32) IP_SALT=$(openssl rand -hex 16) DOOR_KEY=… SITE_URL=https://… SITE_ORIGIN=https://…
-supabase functions deploy reserve ticket reveal door-verify
+supabase functions deploy reserve ticket reveal door-verify door-list
 supabase functions deploy square-webhook --no-verify-jwt     # Square cannot send a Supabase JWT; the signature is the auth
 ```

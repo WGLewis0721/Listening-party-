@@ -72,6 +72,19 @@ const out = {};
         return { overflowX: document.documentElement.scrollWidth - innerWidth, h1: document.querySelectorAll('h1').length, inputFont: ins.map(i => parseFloat(getComputedStyle(i).fontSize)), labelled: ins.every(i => document.querySelector('label[for="' + i.id + '"]')), tinyTargets: tiny, banner: !!document.querySelector('.demo-banner') }; });
       R.pay[W].errors = logs; R.pay[W].external = ext; await ctx.close();
     }
+    // ---------- door page (volunteers): one skin is enough, the page is not skinned beyond colours
+    if (path === '/site/') {
+      R.door = {};
+      for (const [W, H] of [[390, 844], [1024, 768]]) {
+        const ctx = await b.newContext({ viewport: { width: W, height: H }, hasTouch: W < 700, isMobile: W < 700 }); const pg = await ctx.newPage(); const logs = [];
+        pg.on('console', m => { if (['error', 'warning'].includes(m.type())) logs.push(m.text()); }); pg.on('pageerror', e => logs.push(e.message));
+        await pg.goto(BASE + path + 'door.html', { waitUntil: 'load' }); await pg.waitForTimeout(1500);
+        R.door[W] = await pg.evaluate(() => { const tiny = [], small = []; document.querySelectorAll('button,input,summary,.scan').forEach(e => { const r = e.getBoundingClientRect(); if (r.width && r.height < 44 && !e.closest('#dc')) tiny.push((e.id || e.className || e.tagName) + ':' + Math.round(r.height)); });
+          document.querySelectorAll('.dw *').forEach(e => { if (e.children.length || !e.textContent.trim()) return; const fs = parseFloat(getComputedStyle(e).fontSize); if (fs < 12) small.push(e.textContent.trim().slice(0, 20) + ':' + fs); });
+          return { overflowX: document.documentElement.scrollWidth - innerWidth, h1: document.querySelectorAll('h1').length, tinyTargets: tiny, smallText: small, scanFirstScreen: document.querySelector('#scan').getBoundingClientRect().bottom <= innerHeight }; });
+        R.door[W].errors = logs; await ctx.close();
+      }
+    }
   }
   await b.close();
   console.log(JSON.stringify(out, null, 1));

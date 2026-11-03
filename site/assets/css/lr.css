@@ -183,7 +183,8 @@ button{font:inherit;color:inherit}
 .tk-glare{position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px circle at var(--gx) var(--gy),rgba(255,255,255,.14),transparent 60%);mix-blend-mode:soft-light;opacity:0;transition:opacity .3s}
 .tk:hover .tk-glare{opacity:1}
 .tk-qr{display:none;margin:14px auto 0;width:132px;height:132px;padding:8px;border-radius:10px;background:#fff}
-.tk[data-state="confirmed"] .tk-qr{display:block}
+.tk[data-state="confirmed"]:not([data-phase]) .tk-qr{display:block}                   /* design boards and the client picker show a finished card */
+.tk[data-phase="doors"] .tk-qr{display:block;width:min(68vw,280px);height:min(68vw,280px)}
 .tk-qr svg,.tk-qr img{width:100%;height:100%}
 
 /* ───────── player (bottom scrubber = the evening) ───────── */
@@ -299,12 +300,16 @@ noscript .ns{padding:40px var(--pad);font-size:1.1rem}
 .field input::placeholder{color:color-mix(in srgb,var(--ink) 42%,transparent)}
 .field input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--acc);background:color-mix(in srgb,var(--ink) 10%,transparent)}
 .field input[aria-invalid="true"]{box-shadow:inset 0 0 0 2px #ff6b6b}
-.err{min-height:1.2em;margin:0;font-size:.85rem;color:#ff8f8f}
+.err{margin:0;font-size:.9rem;color:#ff8f8f}.err:empty{display:none}
 .step{display:flex;align-items:center;gap:6px;width:max-content;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line-strong);padding:4px}
 .step button{width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:var(--ink);font-size:20px;cursor:pointer;transition:background .2s}
 .step button:hover:not([disabled]){background:color-mix(in srgb,var(--ink) 12%,transparent)}
 .step button[disabled]{opacity:.35;cursor:not-allowed}
 .step output{min-width:44px;text-align:center;font:700 18px/1 var(--mono)}
+.seatrow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.sumline{display:grid;gap:8px;text-align:right}
+.sumline .label{font:600 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.sumline b{font:800 1.9rem/1 var(--body);font-variant-numeric:tabular-nums}
 .sum{display:grid;gap:8px;padding-top:6px;border-top:1px solid var(--line);color:var(--muted);font-size:.95rem}
 .sum div{display:flex;justify-content:space-between;gap:12px}
 .sum b{color:var(--ink);font-variant-numeric:tabular-nums}
@@ -328,7 +333,13 @@ noscript .ns{padding:40px var(--pad);font-size:1.1rem}
 @media (max-width:899px){
   .pay-grid{grid-template-columns:1fr}
   .pay-card{position:relative;top:auto;order:-1;max-width:460px;margin:0 auto;width:100%}
-  .pay-stage{padding-top:24px}
+  .pay-grid[data-view="f"] .pay-card{order:0}                 /* the form comes first on a phone; the card is the preview below it */
+  .pay-stage{padding-top:14px}
+  .pay-grid[data-view="f"] #step{display:none}                /* on a phone the first screen is: heading, form, Pay */
+  .pay-grid[data-view="f"] .pay-form .h2{font-size:clamp(1.8rem,8.4vw,2.4rem)}
+  .pay-form .lede{font-size:.95rem;margin-top:8px}
+  .form{margin-top:12px;padding:16px;gap:12px}
+  .field{gap:6px}
   .pay .tk-plate{height:120px}
   .pay .tk-sub,.pay .tk-lines{display:none}
   .pay-form .h2{max-width:none;font-size:clamp(2.2rem,11vw,3.2rem)}
@@ -341,29 +352,22 @@ noscript .ns{padding:40px var(--pad);font-size:1.1rem}
 .tk[data-state="confirmed"] .tk-loc:not(.is-revealed) .tk-addr{display:none}
 .tk-act{display:grid;gap:10px;margin-top:12px}
 .tk-act[hidden],.tk-area[hidden],.tk-door[hidden]{display:none}
+.tk-act .fine{margin:0;font-size:.82rem}
 .tk-wm{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;background-repeat:repeat;transition:opacity .2s}
 .tk-loc.is-revealed .tk-wm{opacity:1}
 .tk-loc.is-revealed .tk-addr{position:relative;z-index:1}
 .tk-live{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font:600 12px/1.3 var(--mono);letter-spacing:.06em;color:var(--muted);font-variant-numeric:tabular-nums}
 .tk-bar{height:3px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:8px}
 .tk-bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .9s linear}
-.tk-door{margin-top:14px;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--acc) 14%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 50%,transparent)}
-.tk-door .label{display:block}
-.tk-door b{display:block;margin-top:6px;font-family:var(--display);font-weight:var(--name-weight);font-style:var(--name-style);text-transform:var(--name-transform);font-size:1.7rem;line-height:1;letter-spacing:var(--name-track)}
 .tk-qrwrap{text-align:center}
 .tk-qrcap{display:none;margin:8px 0 0;font:600 12px/1.4 var(--mono);letter-spacing:.06em;color:var(--muted);font-variant-numeric:tabular-nums}
-.tk[data-state="confirmed"] .tk-qrcap:not(:empty){display:block}
+.tk[data-state="confirmed"]:not([data-phase]) .tk-qrcap:not(:empty){display:block}
+.tk[data-phase="doors"] .tk-qrcap:not(:empty){display:block;font-size:14px;color:var(--ink)}
 .tk-qr{position:relative}
 .tk-qr::after{content:"";position:absolute;left:8px;right:8px;bottom:3px;height:3px;border-radius:2px;background:#0b0b0c;transform-origin:left;transform:scaleX(var(--qr-left,1))}
-.tk[data-phase="in"] .tk-qr{opacity:.35}
-.reveal-btn{--hold:0%;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;width:100%;padding:0 20px;border:0;border-radius:999px;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);font:700 15px/1 var(--body);cursor:pointer;overflow:hidden;isolation:isolate;box-shadow:inset 0 0 0 1px var(--line-strong);touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-.reveal-btn::before{content:"";position:absolute;inset:0;z-index:-1;width:var(--hold);background:var(--acc);opacity:.9}
-.reveal-btn[data-held="1"]{color:var(--acc-on)}
+.reveal-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:60px;width:100%;padding:0 20px;border:0;border-radius:999px;background:var(--acc);color:var(--acc-on);font:800 17px/1 var(--body);letter-spacing:.01em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-shadow:0 10px 36px -10px color-mix(in srgb,var(--acc) 80%,transparent)}
 .reveal-btn:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
 .reveal-btn[disabled]{opacity:.55;cursor:progress}
-.tk-act .fine{margin:0;font-size:.82rem}
-.tap{display:flex;align-items:center;gap:10px;min-height:44px;font-size:.85rem;color:var(--muted);cursor:pointer}
-.tap input{width:20px;height:20px;accent-color:var(--acc)}
 /* pay page panels */
 .panel{margin-top:clamp(20px,3vh,32px);display:grid;gap:16px;max-width:540px;padding:clamp(18px,2.4vw,28px);border-radius:var(--r);background:color-mix(in srgb,var(--bg) 66%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:inset 0 0 0 1px var(--line)}
 .panel[hidden]{display:none}
@@ -374,19 +378,6 @@ noscript .ns{padding:40px var(--pad);font-size:1.1rem}
 .banner[hidden]{display:none}
 .spin{width:28px;height:28px;border-radius:50%;border:3px solid var(--line-strong);border-top-color:var(--acc);animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.tl{margin:0;padding:0;list-style:none;display:grid;gap:0}
-.tl li{position:relative;display:grid;grid-template-columns:28px 1fr;gap:12px;padding:0 0 18px}
-.tl li:last-child{padding-bottom:0}
-.tl li::before{content:"";position:absolute;left:13px;top:26px;bottom:0;width:2px;background:var(--line)}
-.tl li:last-child::before{display:none}
-.tl .dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 12px/1 var(--mono);box-shadow:inset 0 0 0 2px var(--line-strong);background:var(--bg);color:var(--muted)}
-.tl li.done .dot{background:var(--acc);color:var(--acc-on);box-shadow:none}
-.tl li.now .dot{box-shadow:inset 0 0 0 2px var(--acc);color:var(--ink)}
-.tl b{display:block;font-size:.98rem}
-.tl span{display:block;color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
-.tl li.now span{color:var(--ink)}
-.acts2{display:flex;flex-wrap:wrap;gap:10px}
-.acts2 .btn{flex:1 1 180px}
 /* simulated Square checkout */
 .sq{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .sq[hidden]{display:none}
@@ -409,5 +400,21 @@ noscript .ns{padding:40px var(--pad);font-size:1.1rem}
 .dclock .now{font:700 15px/1.3 var(--mono);color:#fff;font-variant-numeric:tabular-nums}
 .dclock .box button{min-height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.1);color:#f4f1ea;font:600 13px/1.2 var(--body);cursor:pointer;text-align:left;padding:0 14px}
 .dclock .box button:hover{background:rgba(255,255,255,.18)}
-@media (max-width:899px){.pay-card .tk-qr{width:120px;height:120px}}
+
 @media (prefers-reduced-motion:reduce){.spin{animation:none}.tk-bar i{transition:none}}
+
+/* simple buyer flow: one sentence, one button, the rest under More */
+.next{margin:0;font-size:1.15rem;line-height:1.45;color:var(--ink)}
+.linkbtn{justify-self:center;min-height:44px;padding:0 14px;border:0;background:none;color:var(--muted);font:600 .95rem var(--body);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.linkbtn:hover{color:var(--ink)}
+.more{border-top:1px solid var(--line);padding-top:4px}
+.more summary{list-style:none;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--muted);font:600 .95rem var(--body)}
+.more summary::-webkit-details-marker{display:none}
+.more summary::after{content:"+";font-weight:700}
+.more[open] summary::after{content:"\2212"}
+.more-in{display:grid;gap:10px;padding-top:6px}
+
+/* at the door the code is the whole point: it moves to the top of the card, everything else steps back */
+.tk[data-phase="doors"] .tk-in{display:flex;flex-direction:column}
+.tk[data-phase="doors"] .tk-qrwrap{order:-1;margin-bottom:6px}
+.tk[data-phase="doors"] .tk-meta,.tk[data-phase="doors"] .tk-lines{display:none}

@@ -13,7 +13,7 @@
   var NOTICE = 'Demo venue: a real public place used as a stand-in. No event is scheduled there and it is not affiliated with Listening Room.';
   var SECRET = 'prototype-signing-secret';          // signs the rotating entry code
   var KEY = 'lr:mock:v1', OFF = 'lr:mock:offset';
-  var HOLD_MIN = 30, MAX_REVEALS = 3, REVEAL_SECONDS = 20, LAT = [140, 320];
+  var HOLD_MIN = 30, MAX_REVEALS = 5, REVEAL_SECONDS = 45, LAT = [140, 320];
 
   function read() { try { return JSON.parse(localStorage.getItem(KEY) || '{"r":{}}'); } catch (e) { return { r: {} }; } }
   function write(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) { } }
@@ -44,7 +44,6 @@
     if (paid) {
       v.qr = await T.qrPayload(SECRET, x.ref, t);
       v.qrStep = T.qrStep(t);
-      if (ph === 'doors' || ph === 'over' || ph === 'in') v.doorPhrase = await T.doorPhrase(SECRET, x.slug);
     }
     return v;                                   // note: never includes the address
   }
@@ -101,6 +100,14 @@
       if (x.checkedInAt) return { ok: false, reason: 'already', name: x.name, qty: x.qty, ref: x.ref, at: x.checkedInAt };
       x.checkedInAt = now(); write(d);
       return { ok: true, reason: 'ok', name: x.name, qty: x.qty, ref: x.ref, at: x.checkedInAt };
+    },
+    /* staff picked the name from the list (guest's phone is dead). One check-in per ticket, logged as 'name'. */
+    doorManual: async function (ref) {
+      await lat(); var d = read(), x = Object.keys(d.r).map(function (k) { return d.r[k]; }).filter(function (y) { return y.ref === ref; })[0];
+      if (!x || x.state !== 'paid') return { ok: false, reason: 'notfound' };
+      if (x.checkedInAt) return { ok: false, reason: 'already', name: x.name, qty: x.qty, ref: x.ref, at: x.checkedInAt };
+      x.checkedInAt = now(); x.checkedInVia = 'name'; write(d);
+      return { ok: true, reason: 'ok', name: x.name, qty: x.qty, ref: x.ref, at: x.checkedInAt, via: 'name' };
     },
     doorList: async function (slug) {
       var d = read(); return Object.keys(d.r).map(function (k) { return d.r[k]; }).filter(function (x) { return x.slug === slug && x.state === 'paid'; })
