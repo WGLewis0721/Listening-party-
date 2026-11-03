@@ -30,14 +30,14 @@
     if (ti.size) v['--ns-d'] = ti.size; if (ti.sizeM) v['--ns-m'] = ti.sizeM; if (ti.fill) v['--name-fill'] = ti.fill;
     return v;
   };
-  LR.applyTheme = function () {
-    if (!E) return;
-    var r = document.documentElement.style, v = LR.themeVars(E);
+  LR.applyTheme = function (Ed) {
+    Ed = Ed || E; if (!Ed) return;
+    var r = document.documentElement.style, v = LR.themeVars(Ed);
+    ['--ns-d', '--ns-m', '--name-fill'].forEach(function (n) { r.removeProperty(n); });   // optional per skin: never inherit the previous skin's
     Object.keys(v).forEach(function (n) { r.setProperty(n, v[n]); });
-    var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', E.theme.tokens.bg);
-    var d = E.dj;
-    document.title = d.name + ' · ' + E.series.name + ' · Ed. ' + E.series.edition + ' · ' + E.series.city;
-    document.documentElement.setAttribute('data-theme', E.theme.id || 'custom');
+    var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', Ed.theme.tokens.bg);
+    document.title = Ed.dj.name + ' · ' + Ed.series.name + ' · Ed. ' + Ed.series.edition + ' · ' + Ed.series.city;
+    document.documentElement.setAttribute('data-theme', Ed.theme.id || 'custom');
   };
 
   LR.qrSVG = function (text) {

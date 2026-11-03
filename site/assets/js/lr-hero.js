@@ -4,13 +4,36 @@
    Falls back to a stacked static layout with no pinning for Reduce Motion, no-JS-libs, or print. */
 (function (g) {
   'use strict';
-  var LR = g.LR, E = LR && LR.E; if (!E) return;
+  var LR = g.LR; if (!LR) return;
+  var CH = [{ k: 'arrive', n: 'Arrive', p: 0 }, { k: 'sound', n: 'Sound', p: .12 }, { k: 'set', n: 'Set', p: .34 }, { k: 'room', n: 'Room', p: .58 }, { k: 'ticket', n: 'Ticket', p: .82 }];
+
+  /* mount(edition, opts) builds the whole hero into #lr and returns { destroy, progress, setProgress }.
+     opts: embed, payHref, intro (false skips the opening sequence), swap (quick fade), progress (0..1 to start at). */
+  function mount(E, opts) {
+  opts = opts || {};
+  LR.E = E; LR.applyTheme(E);
   var esc = LR.esc, d = E.dj, ev = E.event, th = E.theme, s = E.series;
   var root = document.getElementById('lr');
-  var CH = [{ k: 'arrive', n: 'Arrive', p: 0 }, { k: 'sound', n: 'Sound', p: .12 }, { k: 'set', n: 'Set', p: .34 }, { k: 'room', n: 'Room', p: .58 }, { k: 'ticket', n: 'Ticket', p: .82 }];
-  var payHref = (E.cta && E.cta.pay) || 'pay.html';
+  var embed = opts.embed != null ? opts.embed : /[?&]embed=1/.test(location.search);
+  var payHref = opts.payHref || (((E.cta && E.cta.pay) || 'pay.html') + (embed ? '?embed=1' : ''));
   var ctaLabel = (E.cta && E.cta.label) || 'Reserve your seat';
   var price = '$' + ev.price;
+  var dead = false, cleanups = [], mm, intro, art, plate, stage, track;
+  function onWin(type, fn, o) { g.addEventListener(type, fn, o); cleanups.push(function () { g.removeEventListener(type, fn, o); }); }
+  var api = {
+    E: E,
+    progress: function () { if (!track) return 0; var max = track.offsetHeight - g.innerHeight; return max > 0 ? LR.clamp(g.scrollY / max, 0, 1) : 0; },
+    setProgress: function (p) { if (!track) return; var max = track.offsetHeight - g.innerHeight; g.scrollTo(0, track.offsetTop + max * LR.clamp(p, 0, 1)); },
+    destroy: function () {
+      dead = true;
+      try { if (mm) mm.revert(); } catch (e) { }
+      try { if (intro) intro.kill(); } catch (e) { }
+      try { if (g.ScrollTrigger) g.ScrollTrigger.getAll().forEach(function (t) { t.kill(); }); } catch (e) { }
+      if (art) art.destroy(); if (plate) plate.destroy();
+      cleanups.forEach(function (f) { f(); }); cleanups = [];
+      root.innerHTML = ''; root.setAttribute('data-mode', 'static'); root.classList.remove('no-intro', 'swap-in');
+    }
+  };
 
   /* ───── markup ───── */
   function nameHTML() {
@@ -58,7 +81,7 @@
       '<a class="skip" href="#reserve">Skip to reserve</a>' +
       '<div class="track" id="track"><main class="stage" id="stage" data-gl="1">' +
       '<canvas class="gl" aria-hidden="true"></canvas><div class="fx scrim" aria-hidden="true"></div><div class="fx grain" aria-hidden="true"></div><div class="fx vignette" aria-hidden="true"></div>' +
-      '<header class="bar"><a class="brand" href="' + esc(E.homeHref || './') + '" aria-label="' + esc(s.name) + ', edition ' + esc(s.edition) + '"><span class="brand-mark"></span><b>' + esc(s.name) + '</b><i>Ed. ' + esc(s.edition) + '</i></a>' +
+      '<header class="bar"><a class="brand" href="' + (embed ? '#' : esc(E.homeHref || './')) + '" aria-label="' + esc(s.name) + ', edition ' + esc(s.edition) + '"><span class="brand-mark"></span><b>' + esc(s.name) + '</b><i>Ed. ' + esc(s.edition) + '</i></a>' +
       '<p class="bar-meta"><span class="m-wrap"><span class="m-date">' + esc(ev.dateLabel) + ' · ' + esc(s.city) + '</span><b>' + esc(d.name) + '</b></span></p>' +
       '<a class="btn btn--sm bar-cta" href="' + payHref + '">Reserve · ' + price + LR.icons.arrow + '</a></header>' +
 
@@ -92,18 +115,20 @@
   /* ───── boot ───── */
   build();
   var $ = function (q, el) { return (el || root).querySelector(q); }, $$ = function (q, el) { return [].slice.call((el || root).querySelectorAll(q)); };
-  var stage = $('#stage'), track = $('#track');
-  var art = LR.mountArt($('.gl'), { fps: LR.coarse ? 40 : 60, safe: true });
-  var plate = LR.mountArt($('.tk-plate canvas'), { fps: 24, prog: .62, seed: 7, timeOffset: 30, dprMax: 1.25 });
+  stage = $('#stage'); track = $('#track');
+  if (opts.intro === false) root.classList.add('no-intro'); if (opts.swap) root.classList.add('swap-in');
+  art = LR.mountArt($('.gl'), { E: E, fps: LR.coarse ? 40 : 60, safe: true });
+  plate = LR.mountArt($('.tk-plate canvas'), { E: E, fps: 24, prog: .62, seed: 7, timeOffset: 30, dprMax: 1.25 });
   var ticket = $('.tk');
   function measure() { stage.style.setProperty('--tk-h', ticket.offsetHeight + 'px'); }
-  measure(); g.addEventListener('resize', measure); if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  measure(); onWin('resize', measure); if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (!dead) measure(); });
   LR.tilt(ticket, 6); LR.magnet($('#reserve'), .18); LR.magnet($('.bar-cta'), .25);
 
   var gsap = g.gsap, ST = g.ScrollTrigger;
+  if (embed) { var bl = $('.brand'); if (bl) bl.addEventListener('click', function (e) { e.preventDefault(); }); }
   var useScrub = !!(gsap && ST) && !LR.reduce;
   root.setAttribute('data-mode', useScrub ? 'scrub' : 'static');
-  if (!useScrub) { if (art) art.setProg(.5); if (plate) plate.setProg(.62); return; }
+  if (!useScrub) { if (art) art.setProg(.5); if (plate) plate.setProg(.62); return api; }
 
   gsap.registerPlugin(ST);
   ST.config({ ignoreMobileResize: true });
@@ -176,16 +201,19 @@
 
   /* intro: letters rise through a mask, then the rest settle in. Runs once, ~1.2s. */
   var easeIn = th.ease || 'expo.out';
-  gsap.set([$('.bar'), $('.player')], { autoAlpha: 0 });
-  var intro = gsap.timeline({ delay: .08 });
   var targets = $$('.name .ch').length ? $$('.name .ch') : $$('.name .ln>span');
+  if (opts.intro !== false) {
+  gsap.set([$('.bar'), $('.player')], { autoAlpha: 0 });
+  intro = gsap.timeline({ delay: .08 });
   intro.from(targets, { yPercent: 118, rotate: th.title && th.title.tilt ? th.title.tilt : 0, duration: 1.15, stagger: targets.length > 6 ? .035 : .12, ease: easeIn })
     .to([$('.bar'), $('.player')], { autoAlpha: 1, duration: .8, ease: 'power2.out' }, .45);
+  }
 
-  var mm = gsap.matchMedia();
-  mm.add('(min-width: 900px)', function () { var t = timeline(false); onProg(0); return function () { t.kill(); }; });
-  mm.add('(max-width: 899px)', function () { var t = timeline(true); onProg(0); return function () { t.kill(); }; });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ST.refresh(); });
+  var p0 = opts.progress || 0; if (p0 > 0) api.setProgress(p0);
+  mm = gsap.matchMedia();
+  mm.add('(min-width: 900px)', function () { var t = timeline(false); onProg(p0); return function () { t.kill(); }; });
+  mm.add('(max-width: 899px)', function () { var t = timeline(true); onProg(p0); return function () { t.kill(); }; });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (!dead) ST.refresh(); });
 
   /* chapter jumps + skip link */
   function toP(p, instant) {
@@ -196,6 +224,11 @@
   $('.skip').addEventListener('click', function (e) { e.preventDefault(); toP(1, true); setTimeout(function () { reserve.focus({ preventScroll: true }); }, 60); });
 
   /* pointer parallax for the motif */
-  g.addEventListener('pointermove', function (e) { if (art) art.setPointer(e.clientX / g.innerWidth, e.clientY / g.innerHeight); }, { passive: true });
-  g.addEventListener('keydown', function (e) { if (e.key === 'Home') { e.preventDefault(); toP(0, true); } });
+  onWin('pointermove', function (e) { if (art) art.setPointer(e.clientX / g.innerWidth, e.clientY / g.innerHeight); }, { passive: true });
+  onWin('keydown', function (e) { if (e.key === 'Home') { e.preventDefault(); toP(0, true); } });
+  return api;
+  }
+
+  LR.hero = { mount: mount };
+  if (!g.LR_MANUAL && LR.E) LR.hero.current = mount(LR.E, {});
 })(window);

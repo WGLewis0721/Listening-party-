@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0b0c">
+<title>Listening Room · Skin switcher</title>
+<link rel="stylesheet" href="../site/assets/css/fonts.css">
+<link rel="stylesheet" href="../site/assets/css/lr.css">
+<style>
+/* the five-skin review page: the real hero, plus one control that swaps skins in place and keeps your scroll position */
+.review .bar-meta{display:none}
+#sw{position:fixed;z-index:80;top:10px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:rgba(8,8,10,.74);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 12px 40px -12px #000;font-family:'JetBrains Mono Variable',ui-monospace,monospace;color:#f4f1ea}
+#sw button{min-width:44px;height:44px;padding:0;border:0;border-radius:999px;background:transparent;color:inherit;font:700 12px/1 'JetBrains Mono Variable',ui-monospace,monospace;letter-spacing:.08em;cursor:pointer;white-space:nowrap;transition:background .25s,color .25s}
+#sw button:hover{background:rgba(255,255,255,.12)}
+#sw button:focus-visible{outline:2px solid var(--sa,#c8a45c);outline-offset:2px}
+#sw .chips{display:flex;gap:2px;margin:0;padding:0;list-style:none}
+#sw .chip[aria-current="true"]{background:var(--sa,#c8a45c);color:var(--sa-on,#0b0b0c);padding:0 16px}
+#sw .chip .nm{display:none;margin-left:8px;letter-spacing:.1em;text-transform:uppercase}
+#sw .chip[aria-current="true"] .nm{display:inline}
+#sw .arr{font-size:20px}
+#toast{position:fixed;z-index:79;top:68px;left:50%;transform:translateX(-50%);padding:10px 16px;border-radius:999px;background:rgba(8,8,10,.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);font:700 12px/1 'JetBrains Mono Variable',ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:#f4f1ea;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
+#toast.on{opacity:1}
+@media (max-width:1180px){#sw .chip:not([aria-current="true"]){display:none}}
+@media (max-width:899px){
+  #sw{left:12px;transform:none;top:6px}
+  #sw .chip[aria-current="true"]{padding:0 12px}#sw .chip .nm{display:none!important}
+  .review .brand{visibility:hidden}
+  #toast{left:12px;transform:none;top:58px}
+}
+@media (prefers-reduced-motion:reduce){#sw button,#toast{transition:none}}
+</style>
+</head>
+<body class="review">
+<div class="lr" id="lr" data-mode="static"><noscript><p style="padding:40px">The skin switcher needs JavaScript.</p></noscript></div>
+<div id="sw" role="group" aria-label="Skin switcher">
+  <button type="button" class="arr" id="sw-prev" aria-label="Previous skin">&lsaquo;</button>
+  <ol class="chips" id="sw-chips"></ol>
+  <button type="button" class="arr" id="sw-next" aria-label="Next skin">&rsaquo;</button>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="../site/assets/js/vendor/gsap.min.js"></script>
+<script src="../site/assets/js/vendor/ScrollTrigger.min.js"></script>
+<script src="../site/edition.js"></script><script>(window.EDS=window.EDS||[]).push(window.LR_EDITION)</script>
+<script src="02-led-stage/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
+<script src="03-golden-hour/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
+<script src="04-chrome-disco/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
+<script src="05-brass-night/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
+<script>window.LR_NO_THEME = true; window.LR_MANUAL = true;</script>
+<script src="../site/assets/js/lr-shaders.js"></script>
+<script src="../site/assets/js/lr-core.js"></script>
+<script src="../site/assets/js/lr-hero.js"></script>
+<script>
+(function () {
+  'use strict';
+  var EDS = window.EDS, N = EDS.length;
+  var NAMES = ['Quiet Spectra', 'LED Stage', 'Golden Hour', 'Chrome Disco', 'Brass and Night'];
+  var PAY = ['../site/pay.html', '02-led-stage/pay.html', '03-golden-hour/pay.html', '04-chrome-disco/pay.html', '05-brass-night/pay.html'];
+  var q = new URLSearchParams(location.search), embed = q.get('embed') === '1';
+  var cur = -1, api = null, tt;
+  var $ = function (s) { return document.querySelector(s); };
+
+  function payHref(i) {
+    var rb = (i === 0 ? '../concepts/review.html' : '../review.html') + '?skin=' + (i + 1) + (embed ? '&embed=1' : '');
+    return PAY[i] + '?back=' + encodeURIComponent(rb) + (embed ? '&embed=1' : '');
+  }
+  function chips() {
+    $('#sw-chips').innerHTML = EDS.map(function (E, i) {
+      return '<li><button type="button" class="chip" data-i="' + i + '" aria-label="Skin ' + (i + 1) + ', ' + NAMES[i] + '"><span class="no">' + String(i + 1).padStart(2, '0') + '</span><span class="nm">' + NAMES[i] + '</span></button></li>';
+    }).join('');
+    [].forEach.call(document.querySelectorAll('.chip'), function (b) { b.addEventListener('click', function () { show(+b.dataset.i); }); });
+  }
+  function ui(i) {
+    var t = EDS[i].theme.tokens, sw = $('#sw');
+    sw.style.setProperty('--sa', t.acc); sw.style.setProperty('--sa-on', t.accOn);
+    [].forEach.call(document.querySelectorAll('.chip'), function (b, k) { b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+    var tg = $('#toast'); tg.textContent = String(i + 1).padStart(2, '0') + ' · ' + NAMES[i]; tg.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { tg.classList.remove('on'); }, 1500);
+  }
+  /* show(i): swap to skin i. The scroll position (progress through the night) carries over, so skins compare at the same beat. */
+  function show(i, o) {
+    o = o || {}; i = ((i % N) + N) % N; if (i === cur && !o.force) return;
+    var p = o.p != null ? o.p : (api ? api.progress() : (+q.get('p') || 0)), first = cur < 0;
+    if (api) api.destroy();
+    api = LR.hero.mount(EDS[i], { embed: embed, payHref: payHref(i), intro: first && !p, swap: !first, progress: p });
+    cur = i; ui(i);
+    try { history.replaceState(null, '', '?skin=' + (i + 1) + (embed ? '&embed=1' : '')); } catch (e) { }
+    try { if (window.parent !== window) window.parent.postMessage({ type: 'lr-skin', i: i }, location.origin); } catch (e) { }
+  }
+  window.LRReview = { show: show, next: function () { show(cur + 1); }, prev: function () { show(cur - 1); }, current: function () { return cur; }, progress: function () { return api ? api.progress() : 0; }, remount: function () { show(cur, { force: true }); } };
+
+  chips();
+  $('#sw-prev').addEventListener('click', function () { show(cur - 1); });
+  $('#sw-next').addEventListener('click', function () { show(cur + 1); });
+  addEventListener('keydown', function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey || /^(INPUT|TEXTAREA|SELECT)$/.test((e.target || {}).tagName || '')) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(cur + 1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); show(cur - 1); }
+    else if (/^[1-9]$/.test(e.key) && +e.key <= N) { show(+e.key - 1); }
+  });
+  var start = Math.min(Math.max((+q.get('skin') || 1) - 1, 0), N - 1);
+  show(start);
+  /* warm every skin's display face so a swap never flashes a fallback font */
+  (window.requestIdleCallback || function (f) { setTimeout(f, 800); })(function () {
+    if (!document.fonts || !document.fonts.load) return;
+    EDS.forEach(function (E) { var f = (E.theme.font.stack.match(/'([^']+)'/) || [])[1], w = (E.theme.title && E.theme.title.weight) || 400, st = (E.theme.title && E.theme.title.style) || 'normal'; if (f) document.fonts.load(st + ' ' + w + ' 100px "' + f + '"').catch(function () { }); });
+  });
+})();
+</script>
+</body>
+</html>

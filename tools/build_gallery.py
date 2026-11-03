@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Builds the concept gallery page.
-  python3 tools/build_gallery.py repo              -> concepts/index.html   (public-safe, no real artist names)
+  python3 tools/build_gallery.py repo              -> concepts/gallery.html (public-safe link gallery; the picker is concepts/index.html)
   python3 tools/build_gallery.py bundle OUT [refs] -> OUT/index.html        (flat bundle root; optional private refs.json adds 'reference vibe' chips)"""
 import json, html, os, sys
 
@@ -132,7 +132,7 @@ footer{{padding:28px 0 48px;border-top:1px solid var(--line);font:500 12px/1.7 v
 </html>
 '''
 if mode == 'repo':
-    out = os.path.join(ROOT, 'concepts', 'index.html')
+    out = os.path.join(ROOT, 'concepts', 'gallery.html')   # concepts/index.html is the client picker (hand-written)
 elif mode == 'bundle-concepts':
     out = os.path.join(sys.argv[2], 'concepts', 'index.html')
 else:

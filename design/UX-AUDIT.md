@@ -98,6 +98,21 @@ These are the defects, in the order they were found. Several were found by the m
 | 14 | **Two bugs in my own tooling:** text boxes measured at block width (full container) and `color-mix()` colors parsed as black | Measured with DOM ranges; parser handles `color(srgb …)`. Without these the audit reported false failures |
 | 15 | One scroll-state failure in a full run | Not reproducible: 0 failures in 30 rewinds when run alone. It happened while two audits were sharing the CPU, and is recorded here as a timing artifact, not a fix |
 
+## The client review site (picker and skin switcher)
+
+| Check | Result |
+| --- | --- |
+| Skin switcher keeps the scroll position | Progress held at exactly 0.70 (laptop) and 0.66 (phone) through all five skins, 0 of 10 swaps lost position or layers |
+| Switcher controls | Buttons, arrow keys and keys 1 to 5 all work; the picker's tabs, Prev/Next buttons and the in-preview switcher stay in sync with no reload |
+| Churn | 20 rapid swaps: 2 canvases in the DOM, 1 scroll trigger alive, no WebGL-context warnings |
+| Device toggle (laptop or phone) | Position is read before the layout resizes, so it carries over |
+| Card generation | One card or all five; unlock, QR, PNG preview and save; a name and seat count carry across |
+| Pick | Favorite, second choice and note persist across a reload; Copy, Email and Share build the same message |
+| Both pages at 390, 820, 1024, 1440 | 0 px overflow, 0 text under 12px, 0 tap targets under 44px, 0 third-party requests, 0 console warnings |
+| Reduce Motion | The switcher works in the static layout |
+
+Defects found on the way: the device toggle read progress after the resize and drifted (0.70 to 0.84), and the shader's new `destroy()` plus a manual `loseContext()` double-freed the GL context and logged warnings. Both fixed.
+
 ## Motion safety
 
 Nothing flashes. The fastest repeating motion is the final button's 2.2s pulse ring (0.45 Hz). The LED rings travel at about 0.5 Hz, the foil sheen takes 7s, the dust and dots drift. Under Reduce Motion every animation stops, the shaders render one still frame, and the page becomes a stacked static layout.

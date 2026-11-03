@@ -3,7 +3,7 @@
 A monthly listening party for Montgomery, as a one-page, scroll-driven site. One pinned hero is the whole site: scrolling takes a visitor from "who is it?" to "how do I get in?" in five beats, ending on a ticket. A separate pay page builds the customer card, in the same skin, and unlocks the venue address.
 
 - **Live site:** `site/` (Pages deploys it from `main`). A fictional DJ, Nova Vale, in the Quiet Spectra skin (Mirror Finish tokens).
-- **Concepts:** `concepts/` holds four more skins plus a gallery (`concepts/index.html`).
+- **Client review site:** `concepts/` (published at `/concepts/`). One page where a client previews all five concepts live, flips between skins with a switcher that keeps their scroll position, generates the customer card for any concept (or all five), and picks a favorite and a second choice. `concepts/review.html` is the full-screen version with the skin switcher.
 - **Design work:** `design/` has the brand boards, wireframes, requirements map, UX audit and research.
 - **Tools:** `tools/` has the gallery and docs builders and the QA scripts.
 
@@ -20,6 +20,8 @@ site/
   edition.js        the only file edited each month: DJ, set, copy, palette, face, motif
   assets/           css, js (GSAP, ScrollTrigger, QR, shaders), self-hosted fonts
 concepts/NN-name/   the same three files for each concept skin
+concepts/index.html the client picker (previews, card generator, pick)
+concepts/review.html all five skins in one hero, with the in-place skin switcher
 ```
 
 To make a new month: copy a concept folder, edit `edition.js`, check the contrast rows on `design/brand-boards.html`, deploy. Details in `design/BRAND-SYSTEM.md`.
@@ -29,7 +31,7 @@ To make a new month: copy a concept folder, edit `edition.js`, check the contras
 ```bash
 python3 -m http.server 8800     # from the repo root
 # live site:  http://localhost:8800/site/
-# concepts:   http://localhost:8800/concepts/
+# client site:  http://localhost:8800/concepts/        (full-screen switcher: /concepts/review.html)
 # boards:     http://localhost:8800/design/brand-boards.html
 ```
 

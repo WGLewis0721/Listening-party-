@@ -2,7 +2,8 @@
 
 ## Status
 
-- **Live page:** `site/`, deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main` (the workflow uploads only `site/`). URL: `https://wglewis0721.github.io/Listening-party-/`.
+- **Live page:** `site/`, deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`. URL: `https://wglewis0721.github.io/Listening-party-/`.
+- **Client review site:** `/concepts/` on the same URL (picker, card generator, skin switcher), plus `/design/` (boards, wireframes, requirements, audit). The workflow assembles `_site/` from `site/` (root), a second copy of `site/` (the concept pages reference `../site/assets`), `concepts/` and `design/*.html`. Everything published is fictional and `noindex`.
 - **Artist:** Nova Vale, fictional. Venue "The Annex Room" and its address are placeholders.
 - **Checkout:** demo. No card is collected and nothing is charged.
 - **Verified:** scripted checks on all five skins (see `design/UX-AUDIT.md`). **Not verified:** real phones, screen readers, 200% zoom, live payments.
@@ -15,6 +16,12 @@
 4. **Seats.** `seatsLeft` is `null`, so no count is shown. Wire it to real inventory or leave it off. Do not show a made-up number.
 5. **Indexing.** Remove `<meta name="robots" content="noindex">` from `site/index.html` and `site/pay.html` when ready to be found.
 6. **Check on a phone.** The pinned scroll over a collapsing mobile browser bar and WebGL frame rate on a mid-range phone are the two untested risks.
+
+## The client review site
+
+- `concepts/index.html`: five live previews (laptop or phone), a skin switcher, **Generate customer card** per concept and for all five, a favorite, a second choice and a note, with Copy, Email and Share. Nothing is sent anywhere: the pick lives in the browser and in the message the client copies. Set `PICK_TO` at the top of the script to pre-address the "Email my pick" button (leave it empty in a public repo if you do not want your address published).
+- `concepts/review.html?skin=N`: the real hero with a skin switcher (buttons, arrow keys, or 1 to 5). Switching swaps the edition in place via `LR.hero.mount()` / `destroy()` and keeps the scroll position, so skins compare at the same beat.
+- `concepts/gallery.html`: the simple link gallery (`python3 tools/build_gallery.py repo`).
 
 ## Design artifacts (`design/`)
 
@@ -30,7 +37,7 @@
 
 - **Do not add real artists' names, likenesses, logos, album art or tour data to this repo.** It is public. The concept pages use fictional DJs for this reason.
 - Do not commit anything that is not meant for public viewing.
-- Keep the Pages upload path at `site/`.
+- Keep the Pages assembly step in `pages.yml` in step with the folders the pages reference (`../site/assets`).
 - Every edition must keep: one filled button at a time, 12px minimum labels, 44px tap targets, and text legible over the live art (`tools/qa/`).
 
 ## Notes on files already in the repo

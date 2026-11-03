@@ -232,7 +232,7 @@
       setProg: function (p) { state.prog = p; if (opts.still) draw(performance.now()); },
       setPointer: function (x, y) { state.ptrT[0] = x; state.ptrT[1] = 1 - y; },
       redraw: function () { resize(); draw(performance.now()); },
-      destroy: function () { global.cancelAnimationFrame(state.raf); global.removeEventListener('resize', resize); if (io) io.disconnect(); }
+      destroy: function () { global.cancelAnimationFrame(state.raf); global.removeEventListener('resize', resize); if (io) io.disconnect(); try { var x = gl.getExtension('WEBGL_lose_context'); if (x) x.loseContext(); } catch (e) { } }
     };
   }
 
