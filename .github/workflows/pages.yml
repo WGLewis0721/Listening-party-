@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/configure-pages@v5
       - name: Build the published site
         # tools/build_site.py assembles _site/ (root = site/, a second copy at /site/, /concepts, /design) and adds the share tags, canonical links,
