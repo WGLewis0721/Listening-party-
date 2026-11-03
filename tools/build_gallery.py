@@ -7,9 +7,9 @@ import json, html, os, sys
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.join(HERE, '..')
 mode = sys.argv[1] if len(sys.argv) > 1 else 'repo'
 refs = {}
-if mode == 'bundle' and len(sys.argv) > 3:
+if mode in ('bundle', 'bundle-concepts') and len(sys.argv) > 3:
     refs = json.load(open(sys.argv[3]))
-P = dict(S='../site/', C='', D='../design/') if mode == 'repo' else dict(S='site/', C='concepts/', D='design/')
+P = dict(S='site/', C='concepts/', D='design/') if mode == 'bundle' else dict(S='../site/', C='', D='../design/')
 
 CARDS = [
     dict(id='quiet-spectra', n='01', folder=None, name='Quiet Spectra', dj='Nova Vale', fam='Slow house · vinyl edits', motif='Dot field + metal playhead', font='Instrument Serif', acc='#c8a45c', swatches=['#0b0b0c', '#f8f6f1', '#c8a45c'],
@@ -49,6 +49,7 @@ def card(c):
   </div>
 </article>'''
 
+extra = f'<li><a href="{P["D"]}ARTIST-REFERENCES.html"><b>Artist references · private</b><span>The reference vibe behind each concept, with sources and how far to trust them.</span></a></li>' if refs else ''
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -58,7 +59,7 @@ page = f'''<!doctype html>
 <title>Listening Room · five concepts</title>
 <link rel="stylesheet" href="{P['S']}assets/css/fonts.css">
 <style>
-:root{{--bg:#09090a;--ink:#f4f1ea;--mu:#b5b0a4;--line:rgba(255,255,255,.14);--gold:#c8a45c;--mono:'JetBrains Mono Variable',ui-monospace,monospace;--body:'Manrope Variable',system-ui,sans-serif;--ease:cubic-bezier(.2,.7,.2,1)}}
+:root{{color-scheme:dark;--bg:#09090a;--ink:#f4f1ea;--mu:#b5b0a4;--line:rgba(255,255,255,.14);--gold:#c8a45c;--mono:'JetBrains Mono Variable',ui-monospace,monospace;--body:'Manrope Variable',system-ui,sans-serif;--ease:cubic-bezier(.2,.7,.2,1)}}
 *{{box-sizing:border-box}}body{{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--body);-webkit-font-smoothing:antialiased}}
 a{{color:inherit}}:focus-visible{{outline:2px solid var(--gold);outline-offset:3px;border-radius:8px}}
 .wrap{{max-width:1320px;margin:0 auto;padding:0 clamp(20px,4vw,64px)}}
@@ -123,6 +124,7 @@ footer{{padding:28px 0 48px;border-top:1px solid var(--line);font:500 12px/1.7 v
     <li><a href="{P['D']}UX-AUDIT.html"><b>UX audit</b><span>Seven fundamentals and the laws of UX, measured on all five skins, with what failed and how it was fixed.</span></a></li>
     <li><a href="{P['D']}RESEARCH.html"><b>Research</b><span>The design references, the techniques, the type choices, and what I could and could not verify.</span></a></li>
     <li><a href="{P['D']}BRAND-SYSTEM.html"><b>Brand system</b><span>How a promoter produces a new edition in about fifteen minutes without breaking quality.</span></a></li>
+    {extra}
   </ul>
 </div></section>
 <footer><div class="wrap">Listening Room · concept set · fonts are self-hosted (Instrument Serif, Big Shoulders Display, Bodoni Moda, Unbounded, Fraunces, Manrope, JetBrains Mono) · motion by GSAP</div></footer>
@@ -131,6 +133,8 @@ footer{{padding:28px 0 48px;border-top:1px solid var(--line);font:500 12px/1.7 v
 '''
 if mode == 'repo':
     out = os.path.join(ROOT, 'concepts', 'index.html')
+elif mode == 'bundle-concepts':
+    out = os.path.join(sys.argv[2], 'concepts', 'index.html')
 else:
     out = os.path.join(sys.argv[2], 'index.html')
 os.makedirs(os.path.dirname(out), exist_ok=True)

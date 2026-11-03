@@ -58,7 +58,7 @@
       '<a class="skip" href="#reserve">Skip to reserve</a>' +
       '<div class="track" id="track"><main class="stage" id="stage" data-gl="1">' +
       '<canvas class="gl" aria-hidden="true"></canvas><div class="fx scrim" aria-hidden="true"></div><div class="fx grain" aria-hidden="true"></div><div class="fx vignette" aria-hidden="true"></div>' +
-      '<header class="bar"><a class="brand" href="./" aria-label="' + esc(s.name) + ', edition ' + esc(s.edition) + '"><span class="brand-mark"></span><b>' + esc(s.name) + '</b><i>Ed. ' + esc(s.edition) + '</i></a>' +
+      '<header class="bar"><a class="brand" href="' + esc(E.homeHref || './') + '" aria-label="' + esc(s.name) + ', edition ' + esc(s.edition) + '"><span class="brand-mark"></span><b>' + esc(s.name) + '</b><i>Ed. ' + esc(s.edition) + '</i></a>' +
       '<p class="bar-meta"><span class="m-wrap"><span class="m-date">' + esc(ev.dateLabel) + ' · ' + esc(s.city) + '</span><b>' + esc(d.name) + '</b></span></p>' +
       '<a class="btn btn--sm bar-cta" href="' + payHref + '">Reserve · ' + price + LR.icons.arrow + '</a></header>' +
 

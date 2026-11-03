@@ -42,7 +42,7 @@
       '<button class="btn btn--block" id="go" type="submit"><span id="go-t">' + (pay.mode === 'link' ? 'Continue to secure payment' : 'Complete demo reservation') + '</span>' + arrow + '</button>' +
       '<p class="fine">' + (pay.mode === 'link' ? 'You will pay on a secure page. Your address is released after payment is confirmed.' : 'Demo only: nothing is charged and no card is collected. To go live, connect Stripe or Square (see HANDOFF.md).') + '</p>' +
       '</form>' +
-      '<div class="done" id="done" hidden><h2 id="done-h" tabindex="-1">You’re in.</h2><p class="lede" id="done-p"></p><div class="acts"><button class="btn" id="save" type="button">Save card (PNG)</button><button class="btn btn--ghost" id="ics" type="button">Add to calendar</button><button class="btn btn--ghost" id="share" type="button">Share</button></div><p class="fine" id="status" role="status"></p><p class="fine"><a href="' + homeHref + '">Back to ' + esc(d.name) + '</a></p></div>' +
+      '<div class="done" id="done" hidden><h2 id="done-h" tabindex="-1">You’re in.</h2><p class="lede" id="done-p"></p><div class="acts"><button class="btn" id="save" type="button">Save card (PNG)</button><button class="btn btn--ghost" id="ics" type="button">Add to calendar</button><button class="btn btn--ghost" id="share" type="button">Share</button></div><div class="card-prev" id="prev" hidden><img id="prev-img" alt="Your saved card, as an image"><p class="fine">Press and hold the image (or right-click it) to save it.</p></div><p class="fine" id="status" role="status"></p><p class="fine"><a href="' + homeHref + '">Back to ' + esc(d.name) + '</a></p></div>' +
       '</section>' +
       '<aside class="pay-card" aria-label="Your card">' + LR.ticketHTML({ state: 'locked', foot: foot, seatsText: ev.capacity + ' total' }) + '</aside>' +
       '</div></main>' +
@@ -173,7 +173,7 @@
 
   $('#save').addEventListener('click', async function () {
     var b = this; b.disabled = true; note('Preparing your card…');
-    try { var blob = await renderPNG(); download(blob, 'listening-room-' + S.ref.toLowerCase() + '.png'); note('Card saved. It includes the address, so share it carefully.'); } catch (err) { note('Could not prepare the card. Take a screenshot instead.'); }
+    try { var blob = await renderPNG(); var img = $('#prev-img'); if (img.dataset.u) URL.revokeObjectURL(img.dataset.u); img.dataset.u = URL.createObjectURL(blob); img.src = img.dataset.u; $('#prev').hidden = false; download(blob, 'listening-room-' + S.ref.toLowerCase() + '.png'); note('Your card is below. If your browser did not download it, press and hold the image to save it. It includes the address, so share it carefully.'); } catch (err) { note('Could not prepare the card. Take a screenshot instead.'); }
     b.disabled = false;
   });
   $('#ics').addEventListener('click', function () {
@@ -181,7 +181,7 @@
     var end = ev.start.slice(0, 11) + ev.end + ':00' + ev.start.slice(19);
     var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Listening Room//Demo//EN', 'BEGIN:VEVENT', 'UID:' + S.ref + '@listening-room', 'DTSTAMP:' + z(new Date().toISOString()), 'DTSTART:' + z(ev.start), 'DTEND:' + z(end),
       'SUMMARY:' + d.name + ' · ' + s.name, 'LOCATION:' + addrText().replace(/,/g, '\\,'), 'DESCRIPTION:Reference ' + S.ref + '\\nAdmit ' + S.qty + '\\nDemo event', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-    download(new Blob([ics], { type: 'text/calendar' }), 'listening-room.ics'); note('Calendar file saved.');
+    download(new Blob([ics], { type: 'text/calendar' }), 'listening-room.ics'); note('Calendar file sent. If nothing downloaded, add it by hand: ' + ev.dateLabel + ' · ' + LR.time12(ev.doors) + ' · ' + addrText() + '.');
   });
   $('#share').addEventListener('click', async function () {
     var url = location.href.split('?')[0].replace(/pay\.html$/, ''), text = 'I’m going to ' + d.name + ' at ' + s.name + ' · ' + ev.dateLabel + ' · ' + s.city;

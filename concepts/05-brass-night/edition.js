@@ -2,6 +2,7 @@
    The only file edited per month: DJ, set, copy and skin. The frame never changes. */
 window.LR_EDITION = {
   "slug": "marlowe-brass",
+  "homeHref": "../index.html",
   "series": {
     "name": "Listening Room",
     "city": "Montgomery, AL",
