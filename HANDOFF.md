@@ -5,17 +5,23 @@
 - **Live page:** `site/`, deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`. URL: `https://wglewis0721.github.io/Listening-party-/`.
 - **Client review site:** `/concepts/` on the same URL (picker, card generator, skin switcher), plus `/design/` (boards, wireframes, requirements, audit). The workflow assembles `_site/` from `site/` (root), a second copy of `site/` (the concept pages reference `../site/assets`), `concepts/` and `design/*.html`. Everything published is fictional and `noindex`.
 - **Artist:** Nova Vale, fictional. Venue "The Annex Room" and its address are placeholders.
-- **Checkout:** demo. No card is collected and nothing is charged.
+- **Checkout:** a simulated Hold → Pay → Unlock flow with a stand-in for Square. No card is collected and nothing is charged. The real Square + Supabase server is written, type-checked and database-tested (27 SQL checks on PostgreSQL 16), but **never deployed and never run against Square**. See `design/SECURE-CARD-FLOW.md` and `server/README.md`.
 - **Verified:** scripted checks on all five skins (see `design/UX-AUDIT.md`). **Not verified:** real phones, screen readers, 200% zoom, live payments.
 
 ## Before a real night
 
 1. **Replace the content** in `site/edition.js`: DJ, tagline, statement, five set slots with `energy`, date, doors, price, capacity.
-2. **Payment.** Set `payment: { mode: 'link', url: '<your Stripe or Square payment link>' }`. The pay page then redirects with a reference and the buyer's email. This path is an **untested template**. You still need a webhook that confirms payment and emails the ticket.
-3. **The secret address.** Everything in `edition.js` is readable by anyone. For a real night remove `venueAddress` from the file and have your server release it only after the payment webhook fires (for example in the ticket email, or from an endpoint the pay page calls after confirmation). Until then the "unlock" is a demonstration.
+2. **Payments (Square).** Deploy `server/` and switch `payment.mode` to `'live'` (steps, secrets and the Square sandbox pass are in `design/SECURE-CARD-FLOW.md`). Verify Square's webhook signature scheme against their SDK helper in the sandbox first.
+3. **The secret address.** It is no longer in `edition.js`. It lives in the database and the server releases it 3 hours before doors, behind a hold-to-reveal and a live watermark. The demo venue (a real museum used as a stand-in) lives only in `site/assets/js/lr-api-mock.js`: remove the mock and demo-clock script tags from `pay.html` and `door.html` before real tickets.
 4. **Seats.** `seatsLeft` is `null`, so no count is shown. Wire it to real inventory or leave it off. Do not show a made-up number.
 5. **Indexing.** Remove `<meta name="robots" content="noindex">` from `site/index.html` and `site/pay.html` when ready to be found.
 6. **Check on a phone.** The pinned scroll over a collapsing mobile browser bar and WebGL frame rate on a mid-range phone are the two untested risks.
+
+## The secure card flow
+
+- `site/pay.html`: hold seats → simulated Square → card → hold-to-reveal. `site/door.html`: staff check-in (demo). Both talk to `LR.api`: the simulator today (`lr-api-mock.js`), the real server later (`lr-api-live.js`).
+- `server/`: Supabase schema and five edge functions for Square. `node --test server/test/ticket-logic.test.js` and `python3 server/test/sql_test.py` (needs a scratch PostgreSQL).
+- The demo has a **Demo clock** (bottom left) to jump to T-3h and doors. It is prototype-only.
 
 ## The client review site
 
@@ -25,6 +31,7 @@
 
 ## Design artifacts (`design/`)
 
+- `SECURE-CARD-FLOW.md`: the Hold → Pay → Unlock flow, the screenshot problem, what is tested, and the Square go-live steps.
 - `brand-boards.html`: frame vs skin, five boards, live contrast, type, motion, locked and confirmed cards. Generated from the real edition files.
 - `wireframes.html`: funnel map, desktop and phone beats, pay page, ticket anatomy (`python3 tools/make_wireframes.py` regenerates it).
 - `REQUIREMENTS-MAP.md`: every requirement mapped to a UI decision and a UX law.

@@ -1,0 +1,239 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Secure card flow: Hold, Pay, Unlock · Listening Room</title><link rel="stylesheet" href="../site/assets/css/fonts.css">
+<style>
+:root{--bg:#09090a;--ink:#f1eee7;--mu:#b5b0a4;--line:rgba(255,255,255,.14);--gold:#c8a45c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 'Manrope Variable',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(20px,4vw,48px) 96px}
+nav{font:600 12px/1 'JetBrains Mono Variable',monospace;letter-spacing:.14em;text-transform:uppercase}nav a{color:var(--gold);text-decoration:none;display:inline-flex;min-height:44px;align-items:center}
+h1{margin:18px 0 22px;font:400 clamp(2.4rem,6vw,4.6rem)/1 'Instrument Serif',Georgia,serif;letter-spacing:-.02em}
+h2{margin:2.4em 0 .6em;font:400 clamp(1.6rem,3vw,2.3rem)/1.1 'Instrument Serif',Georgia,serif;padding-top:.6em;border-top:1px solid var(--line)}
+p,li{color:#d9d5ca;max-width:78ch}strong{color:#fff}a{color:var(--gold)}code{font:500 .88em 'JetBrains Mono Variable',monospace;background:rgba(255,255,255,.08);padding:.1em .4em;border-radius:6px}
+pre{overflow:auto;padding:16px;border-radius:12px;background:#111113;box-shadow:inset 0 0 0 1px var(--line)}pre code{background:none;padding:0}
+.tw{overflow-x:auto;margin:1em 0;border-radius:14px;box-shadow:inset 0 0 0 1px var(--line)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}th,td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font:700 12px/1.3 'JetBrains Mono Variable',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:rgba(255,255,255,.03);white-space:nowrap}tr:last-child td{border-bottom:0}
+td:first-child{white-space:nowrap}
+</style></head><body><div class="wrap"><nav><a href="../concepts/index.html">&larr; All concepts</a></nav><h1>Secure card flow: Hold, Pay, Unlock</h1>
+<p>How a buyer gets a card, how the address stays secret, and what is real versus simulated today. Decisions: <strong>Square</strong> for payments, a <strong>public venue</strong>, and the address released <strong>3 hours before doors</strong>. The demo venue is the Montgomery Museum of Fine Arts, One Museum Drive, Montgomery, AL 36117, used purely as a stand-in. No event is scheduled there and it is not affiliated.</p>
+<h2>The flow</h2>
+<pre><code>1  Pick seats, name, email
+2  The server holds the seats for 30 minutes. A card appears LOCKED, with the buyer's name on it.
+3  &quot;Pay with Square&quot;: hand off to Square's hosted checkout (we never touch card data)
+4  Square's signed webhook, server to server, is the only thing that marks the order paid
+5  The browser returns to the SAME card and asks the server. The card flips to Paid
+6  An email carries a private link, never the address
+7  3 hours before doors the server releases the address, behind a hold-to-reveal, under a live watermark
+8  At doors: a door phrase appears, staff scan a rotating code and match the name
+</code></pre>
+<p><strong>Why not card first, then pay?</strong> A card that already contains the address means the secret was out before any money moved. The card is shown first <em>visually</em> (it builds commitment) but stays locked until Square confirms.</p>
+<h2>What a card shows, by state</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Card shows</th>
+<th>The server will give out</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Held</td>
+<td>Name, a 30-minute countdown, a locked address</td>
+<td>Nothing secret</td>
+</tr>
+<tr>
+<td>Confirming</td>
+<td>"Confirming with Square", nothing unlocked</td>
+<td>Nothing</td>
+</tr>
+<tr>
+<td>Paid, before T-3h</td>
+<td>The area, a rotating entry code, a countdown to the unlock</td>
+<td>The area. Refuses <code>reveal</code></td>
+</tr>
+<tr>
+<td>Ready (T-3h)</td>
+<td>A hold-to-reveal button, 3 reveals</td>
+<td>The address, once per reveal</td>
+</tr>
+<tr>
+<td>Doors (T-30m)</td>
+<td>A door phrase, the live code</td>
+<td>Door phrase</td>
+</tr>
+<tr>
+<td>Checked in</td>
+<td>"Checked in 8:07 PM"</td>
+<td>Nothing more</td>
+</tr>
+<tr>
+<td>Expired or released</td>
+<td>The seats went back on sale</td>
+<td>Nothing</td>
+</tr>
+</tbody>
+</table></div>
+<h2>The screenshot problem</h2>
+<p>The web cannot block a screenshot or a photo of a screen. So the design makes a leak <strong>late, traceable, short-lived and not enough to get in</strong>.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Defense</th>
+<th>What it does</th>
+<th>What it does not do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Late release</td>
+<td>The address exists on the card for hours, not weeks</td>
+<td>A leak in that window still spreads</td>
+</tr>
+<tr>
+<td>Server-gated</td>
+<td>The address is never in the page, the JS, the email or the calendar file until the server says so</td>
+<td>Cannot hide it from the person it is shown to</td>
+</tr>
+<tr>
+<td>Hold to reveal</td>
+<td>Press and hold for 1s. Hides after 20s, when you switch tabs or when the page hides. 3 reveals</td>
+<td>Does not stop a screenshot during the 20s</td>
+</tr>
+<tr>
+<td>Live watermark</td>
+<td>Name, reference and a ticking clock tiled over the address</td>
+<td>Does not stop sharing; it makes sharing attributable</td>
+</tr>
+<tr>
+<td>Rotating entry code</td>
+<td>Changes every 30s, one use, bound to the name</td>
+<td>A screenshot of the address still shows the address</td>
+</tr>
+<tr>
+<td>The door</td>
+<td>Entry needs a valid live code <strong>and</strong> the name on the list</td>
+<td>Knowing the address alone gets nobody in</td>
+</tr>
+<tr>
+<td>Door phrase</td>
+<td>Appears at T-30m on the card only</td>
+<td>Can still be passed along by a buyer</td>
+</tr>
+<tr>
+<td>Address-free exports</td>
+<td>The saved card image and the calendar file carry the area only</td>
+<td>Buyers can still screenshot the live card</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Policy matters as much as pixels.</strong> For a 60-seat, friends-of-friends room, a traceable leak is the strongest deterrent. Say in the terms that cards are personal, that reveals are logged, and what happens on a leak.</p>
+<h2>What is real and what is simulated</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rotating code, release schedule, reveal rules, Square signature check, tokens</td>
+<td><strong>Real and tested.</strong> 9 unit tests in <code>server/test/ticket-logic.test.js</code>, shared by the browser prototype and the server</td>
+</tr>
+<tr>
+<td>Hold, Pay, Unlock UI, hold-to-reveal, watermark, door page, exports</td>
+<td><strong>Real UI, tested end to end.</strong> 33 browser checks on three skins plus phone width, run repeatedly</td>
+</tr>
+<tr>
+<td>The address never being in the page, the public config, the exports or the calendar file</td>
+<td><strong>Tested.</strong> Asserted before payment, while held, after payment, after hiding and after reload</td>
+</tr>
+<tr>
+<td>Server refuses early, wrong-token and over-limit reveals even if the UI is bypassed</td>
+<td><strong>Tested</strong> against the simulator, and in SQL for the limit</td>
+</tr>
+<tr>
+<td>Database: seat holds, no oversell, idempotent payments, late-payment refund flag, atomic reveal cap, one check-in</td>
+<td><strong>Tested on real PostgreSQL 16</strong>: 27 checks in <code>server/test/sql_test.py</code>, including 8 parallel buyers for 1 seat and 6 parallel reveals against a cap of 3</td>
+</tr>
+<tr>
+<td>Edge functions (reserve, square-webhook, ticket, reveal, door-verify)</td>
+<td><strong>Written and type-checked</strong> with Deno. Never deployed or run</td>
+</tr>
+<tr>
+<td>Square payment link and webhook</td>
+<td><strong>Written from Square's docs, not run</strong> against a sandbox or live account</td>
+</tr>
+<tr>
+<td>Email, camera scanning, real phones, screen readers</td>
+<td><strong>Not built or not tested</strong></td>
+</tr>
+<tr>
+<td>The checkout today</td>
+<td><strong>Simulated.</strong> The "Square" page is a stand-in; the simulator lives in <code>site/assets/js/lr-api-mock.js</code> and is the one file that holds the demo address and signing secret</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Go live with Square (sandbox first)</h2>
+<ol>
+<li><strong>Square Developer Console:</strong> create an application. In the sandbox note the <strong>access token</strong> and <strong>location ID</strong>.</li>
+<li><strong>Supabase:</strong> create a project. Run <code>server/supabase/migrations/0001_init.sql</code>, then insert your event (the commented example at the bottom). The real address goes in <code>venue_address</code>, nowhere else.</li>
+<li><strong>Secrets:</strong> set the values below with <code>supabase secrets set</code>. Never commit them or paste them into chat.</li>
+<li><strong>Deploy:</strong> <code>supabase functions deploy reserve ticket reveal door-verify</code> and <code>supabase functions deploy square-webhook --no-verify-jwt</code> (Square cannot send a Supabase JWT).</li>
+<li><strong>Webhook:</strong> in Square, add a subscription to <code>payment.updated</code> with the notification URL set exactly to <code>SQUARE_WEBHOOK_URL</code> (a trailing slash changes the signature). Copy its signature key into <code>SQUARE_WEBHOOK_SIGNATURE_KEY</code>.</li>
+<li><strong>Site:</strong> in <code>edition.js</code> set <code>payment: { provider: 'square', mode: 'live', apiBase: 'https://&lt;project&gt;.supabase.co/functions/v1' }</code>, and load the real address into the database.</li>
+<li><strong>Test in the sandbox end to end</strong>, including a declined card, a refresh mid-payment and a double webhook. Then switch <code>SQUARE_BASE</code> to production.</li>
+</ol>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Secret</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SQUARE_ACCESS_TOKEN</code>, <code>SQUARE_LOCATION_ID</code></td>
+<td>Square credentials. Sandbox first</td>
+</tr>
+<tr>
+<td><code>SQUARE_BASE</code></td>
+<td><code>https://connect.squareupsandbox.com</code> or <code>https://connect.squareup.com</code></td>
+</tr>
+<tr>
+<td><code>SQUARE_WEBHOOK_SIGNATURE_KEY</code>, <code>SQUARE_WEBHOOK_URL</code></td>
+<td>From the Square webhook subscription</td>
+</tr>
+<tr>
+<td><code>TOKEN_SECRET</code></td>
+<td>Random 32+ bytes. Derives each buyer's private card link</td>
+</tr>
+<tr>
+<td><code>IP_SALT</code></td>
+<td>Random string. Hashes IPs in the reveal log</td>
+</tr>
+<tr>
+<td><code>DOOR_KEY</code></td>
+<td>The staff key for the door tool</td>
+</tr>
+<tr>
+<td><code>SITE_URL</code>, <code>SITE_ORIGIN</code></td>
+<td>Your published site, for redirects and CORS</td>
+</tr>
+<tr>
+<td><code>RESEND_API_KEY</code>, <code>MAIL_FROM</code></td>
+<td>Optional. Sends the private card link by email</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Before real tickets</h2>
+<ul>
+<li><strong>Verify Square's webhook signature scheme.</strong> Square's own page does not spell out how the URL and body are combined. The code signs <code>notificationUrl + rawBody</code> as third-party guides describe. Confirm it against Square's SDK helper in the sandbox before relying on it.</li>
+<li><strong>Refunds and leaks:</strong> write the policy. A payment that arrives after the hold lapsed and the seat was resold is flagged <code>paid_review</code> for a human refund.</li>
+<li><strong>Privacy:</strong> reveals are logged with a salted IP hash. Say so in the terms.</li>
+<li><strong>Rate limits and abuse:</strong> add rate limiting at the edge on <code>reserve</code> and <code>reveal</code>.</li>
+<li><strong>Accessibility:</strong> hold-to-reveal has a keyboard path (hold Space or Enter), a "reveal with a tap" option and a screen-reader path. Test with a real screen reader.</li>
+<li><strong>Real devices:</strong> the pinned scroll, the hold gesture and the watermark need phone testing.</li>
+<li><strong>Door:</strong> camera scanning (<code>BarcodeDetector</code> or a JS decoder) is the next build. The verification it calls already exists.</li>
+<li><strong>Transfers:</strong> "Send my seat" (bump <code>token_version</code>, rebind the name) turns sharing into a managed transfer instead of a leak.</li>
+</ul></div></body></html>

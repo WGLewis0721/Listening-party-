@@ -62,6 +62,7 @@ The text-over-art rule is why the shaders take a `uSafe` flag: on the stage canv
 
 ## Payment and the secret address
 
-- `payment.mode = 'demo'` (default) takes no payment and unlocks the card locally, so the experience can be reviewed.
-- `payment.mode = 'link'` with `payment.url` redirects to a Stripe or Square payment link, passing a reference and the email. This path is a template and has **not** been tested against a live account.
-- The venue address must be released by your server after the payment webhook fires. Anything in `edition.js` is readable by anyone, so for a real night remove `venueAddress` from the file and have the server return it.
+- Payments are **Square**. The browser holds seats, hands off to Square's hosted checkout, and only Square's signed webhook marks an order paid.
+- `payment.mode = 'demo'` (default) runs the simulator in the browser so the experience can be reviewed. `'live'` with `apiBase` talks to the Supabase functions in `server/`.
+- The venue address is **not in `edition.js`**. Only the neighborhood (`venueArea`) is public. The address lives in the database and is released from `release.unlockLeadMin` (default 180 minutes) before doors.
+- See `SECURE-CARD-FLOW.md` for the flow, the threat model, what is tested and the go-live steps.

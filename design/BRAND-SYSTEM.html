@@ -210,7 +210,8 @@ td:first-child{white-space:nowrap}
 </ol>
 <h2>Payment and the secret address</h2>
 <ul>
-<li><code>payment.mode = 'demo'</code> (default) takes no payment and unlocks the card locally, so the experience can be reviewed.</li>
-<li><code>payment.mode = 'link'</code> with <code>payment.url</code> redirects to a Stripe or Square payment link, passing a reference and the email. This path is a template and has <strong>not</strong> been tested against a live account.</li>
-<li>The venue address must be released by your server after the payment webhook fires. Anything in <code>edition.js</code> is readable by anyone, so for a real night remove <code>venueAddress</code> from the file and have the server return it.</li>
+<li>Payments are <strong>Square</strong>. The browser holds seats, hands off to Square's hosted checkout, and only Square's signed webhook marks an order paid.</li>
+<li><code>payment.mode = 'demo'</code> (default) runs the simulator in the browser so the experience can be reviewed. <code>'live'</code> with <code>apiBase</code> talks to the Supabase functions in <code>server/</code>.</li>
+<li>The venue address is <strong>not in <code>edition.js</code></strong>. Only the neighborhood (<code>venueArea</code>) is public. The address lives in the database and is released from <code>release.unlockLeadMin</code> (default 180 minutes) before doors.</li>
+<li>See <code>SECURE-CARD-FLOW.md</code> for the flow, the threat model, what is tested and the go-live steps.</li>
 </ul></div></body></html>

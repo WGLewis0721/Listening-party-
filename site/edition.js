@@ -1,8 +1,8 @@
 /* EDITION · the only file a promoter edits each month.
    Change the DJ, the set, the copy and the skin; the frame (layout, ticket, scroll funnel) never changes.
    FICTIONAL demo data: Nova Vale and "The Annex Room" are made up. Replace before promoting a real night.
-   PRODUCTION NOTE: venue.address must come from your server after payment confirmation. It is in this file
-   only so the demo can show the unlock. Anything in this file is readable by anyone who opens devtools. */
+   SECURITY: the venue name and address are deliberately NOT in this file (anything here is public). They live on the server
+   and reach a card only after payment and only from T-3h. The demo's stand-in venue is in lr-api-mock.js. */
 window.LR_EDITION = {
   slug: 'nova-vale',
   series: { name: 'Listening Room', city: 'Montgomery, AL', edition: '01', month: 'November 2026' },
@@ -17,8 +17,8 @@ window.LR_EDITION = {
   event: {
     start: '2026-11-19T20:00:00-06:00', dateLabel: 'Thu, Nov 19', doors: '20:00', end: '23:00',
     capacity: 60, seatsLeft: null, price: 25, fee: 0, maxQty: 4,
-    venueName: 'The Annex Room', venueAddress: '100 Placeholder Ave, Montgomery, AL 36104',
-    venueDecoy: 'Venue name · 000 Street name, Montgomery, AL', venueLockedLabel: 'Unlocks at checkout'
+    venueArea: 'Blount Cultural Park, Montgomery', release: { unlockLeadMin: 180, doorPhraseLeadMin: 30 },
+    venueDecoy: 'Venue name · 000 Street name, Montgomery, AL', venueLockedLabel: 'Address 3h before doors'
   },
 
   set: [
@@ -32,19 +32,19 @@ window.LR_EDITION = {
   room: {
     stats: [{ n: '60', l: 'seats' }, { n: '0', l: 'dance floors' }, { n: '1', l: 'unhurried DJ' }],
     points: ['Light snacks', 'Drinks at the bar', 'Seated and standing room', 'Phones down, volume up'],
-    lockNote: 'The address is released to ticket holders at checkout. No exceptions.'
+    lockNote: 'The address unlocks on your card three hours before doors. No exceptions.'
   },
 
   closing: {
-    headline: 'Sixty seats. One night. Reserve to unlock the address.',
-    assure: ['Advance tickets only, no door sales', 'The address unlocks at checkout', 'Light snacks and drinks inside'],
+    headline: 'Sixty seats. One night. Reserve now, the address unlocks 3 hours before doors.',
+    assure: ['Advance tickets only, no door sales', 'The address unlocks 3 hours before doors', 'Light snacks and drinks inside'],
     note: 'Advance only · No door sales'
   },
 
-  /* payment: 'pay.html' is the demo checkout. To go live, point it at your Stripe/Square payment link (see HANDOFF.md). */
+  /* 'pay.html' holds the seats, hands off to Square, then shows the card. See design/SECURE-CARD-FLOW.md. */
   cta: { label: 'Reserve your seat', pay: 'pay.html' },
-  /* mode 'demo' = no real payment. mode 'link' + url = redirect to your Stripe/Square payment link (untested template, see HANDOFF.md). */
-  payment: { mode: 'demo', url: '' },
+  /* provider 'square'. mode 'demo' = simulated server in the browser (no real payment). mode 'live' = your Supabase functions at apiBase (see server/README.md; untested against live Square). */
+  payment: { provider: 'square', mode: 'demo', apiBase: '' },
 
   footer: {
     left: 'Demo edition. Fictional artist and venue. No tickets are sold on this page.',

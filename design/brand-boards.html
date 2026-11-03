@@ -147,8 +147,10 @@ body{background:#0a0a0b;color:#f3f1ec;line-height:1.55}
 <!--PRIVATE_REFS-->
 <script>window.LR_NO_THEME=true;</script>
 <script src="../site/assets/js/vendor/qrcode.js"></script>
+<script src="../site/assets/js/lr-ticket.js"></script>
 <script src="../site/assets/js/lr-shaders.js"></script>
 <script src="../site/assets/js/lr-core.js"></script>
+<script src="../site/assets/js/lr-api-mock.js"></script>
 <script>
 (function(){
   var NOTES={
@@ -196,7 +198,7 @@ body{background:#0a0a0b;color:#f3f1ec;line-height:1.55}
     s.innerHTML='<div class="wrap"><div class="bh"><h2>'+esc(N.n||t.id)+'</h2><span class="fam">'+esc(N.fam||'')+'</span></div>'+
       '<div class="grid"><div class="left">'+
       '<div class="motif"><canvas aria-hidden="true"></canvas><div class="fx scrim" style="opacity:.55"></div><div class="fx grain"></div><div class="lock"><p class="eyebrow">Listening Room · Ed. '+esc(E.series.edition)+' · '+esc(E.series.month)+'</p><div><h3 class="name'+(t.title.fill?' fill':'')+'" style="margin:0">'+lines+'</h3><p class="tag">'+esc(E.dj.tagline)+'</p></div></div></div>'+
-      '<div class="tix"><figure><figcaption>Customer card · locked</figcaption><div class="slot" data-state="locked"></div></figure><figure><figcaption>Customer card · confirmed</figcaption><div class="slot" data-state="confirmed"></div></figure></div></div>'+
+      '<div class="tix"><figure><figcaption>Customer card · locked</figcaption><div class="slot" data-state="locked"></div></figure><figure><figcaption>Customer card · paid, address ready</figcaption><div class="slot" data-state="confirmed"></div></figure></div></div>'+
       '<div class="right"><div class="card"><h3>Palette · contrast on void</h3><div class="sw">'+swatches+'</div></div>'+
       '<div class="card spec"><h3>Type</h3><div class="row"><small>Display</small><span class="d">'+esc(E.dj.name)+'</span></div><div class="row"><small>Body</small><span class="b">The address unlocks at checkout.</span></div><div class="row"><small>Label</small><span class="m">Thu, Nov 19 · 8:00 PM</span></div></div>'+
       '<div class="card"><h3>Motion signature</h3><p>'+esc(N.motion||'')+'</p><p class="m" style="margin-top:8px">Ease: '+esc(N.ease||'')+'</p></div>'+
@@ -210,7 +212,7 @@ body{background:#0a0a0b;color:#f3f1ec;line-height:1.55}
       var st=slot.getAttribute('data-state');
       slot.innerHTML=LR.ticketHTML({E:E,state:st,foot:'<span class="btn btn--block">'+esc((E.cta&&E.cta.label)||'Reserve')+' · $'+E.event.price+'</span>',note:esc(E.closing.note)});
       var tk=slot.querySelector('.tk');
-      if(st==='confirmed'){tk.querySelector('[data-k=addr]').textContent=E.event.venueName+' · '+E.event.venueAddress;tk.querySelector('[data-k=lockLabel]').textContent='Unlocked';tk.querySelector('[data-k=state]').textContent='Confirmed';tk.querySelector('[data-k=qr]').innerHTML=LR.qrSVG('LR|'+E.slug+'|LR-ED01-K7M2QX|2');tk.querySelector('[data-k=foot]').innerHTML='<dl class="tk-hold"><div><dt>Holder</dt><dd>Jordan Ellis</dd></div><div><dt>Reference</dt><dd>LR-ED01-K7M2QX</dd></div><div><dt>Admit</dt><dd>2</dd></div></dl>'}
+      if(st==='confirmed'){tk.querySelector('[data-k=addr]').textContent=LR.api.demo.address();tk.querySelector('.tk-loc').classList.add('is-revealed');var ar=tk.querySelector('[data-k=area]');ar.hidden=false;ar.textContent=E.event.venueArea;tk.querySelector('[data-k=lockLabel]').textContent='Address ready';tk.querySelector('[data-k=state]').textContent='Paid';tk.querySelector('[data-k=qr]').innerHTML=LR.qrSVG('LR|'+E.slug+'|LR-ED01-K7M2QX|2');tk.querySelector('[data-k=foot]').innerHTML='<dl class="tk-hold"><div><dt>Holder</dt><dd>Jordan Ellis</dd></div><div><dt>Reference</dt><dd>LR-ED01-K7M2QX</dd></div><div><dt>Admit</dt><dd>2</dd></div></dl>'}
       var cv=tk.querySelector('canvas'),c=LR.mountArt(cv,{E:E,still:true,keep:true,prog:.6,seed:7,timeOffset:30,dprMax:1.25});
       if(c){try{var img=new Image();img.alt='';img.src=cv.toDataURL('image/png');img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';cv.parentNode.insertBefore(img,cv);cv.remove();c.destroy()}catch(e){}}
     });

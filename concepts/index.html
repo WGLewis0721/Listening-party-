@@ -150,21 +150,21 @@ footer a{color:var(--ink);text-decoration-color:var(--a);text-underline-offset:3
       <div class="vp" id="vp"><iframe id="frame" title="Concept preview" allow="fullscreen"></iframe><div class="load" id="load">Loading preview</div><div class="tip" id="tip">Scroll inside the preview</div></div>
       <div class="cap">
         <div><h3 id="c-name"></h3><p id="c-line"></p><div class="meta" id="c-meta"></div></div>
-        <div class="acts"><button class="btn" type="button" id="gen-one">Generate customer card</button><button class="btn alt" type="button" id="fav-one">☆ Make this my favorite</button></div>
+        <div class="acts"><button class="btn" type="button" id="gen-one">Generate customer card</button><a class="btn alt" id="try" href="#" target="_blank" rel="noopener">Try the pay flow ↗</a><button class="btn alt" type="button" id="fav-one">☆ Make this my favorite</button></div>
       </div>
     </div>
   </div>
 </div></section>
 
 <section class="blk" id="cards" aria-labelledby="h-cards"><div class="wrap">
-  <div class="sh"><div><p class="kick">Step 2</p><h2 id="h-cards">Generate the customer cards</h2><p>This is what a ticket buyer gets after paying: the venue address unlocks on a card in the concept's own style. Use any name; it never leaves this page.</p></div></div>
+  <div class="sh"><div><p class="kick">Step 2</p><h2 id="h-cards">Generate the customer cards</h2><p>This is the card a ticket buyer holds once paid, shown with the address already released so you can judge the style. In the real flow the address unlocks three hours before doors, behind a hold-to-reveal, and the entry code refreshes every 30 seconds. <a class="link" href="../site/pay.html" target="_blank" rel="noopener" style="min-height:auto">Try the full flow ↗</a></p></div></div>
   <div class="ctl">
     <div class="fld"><label for="guest">Name on the card</label><input id="guest" autocomplete="off" value="Jordan Ellis" maxlength="40"></div>
     <div class="fld" style="flex:0 1 auto;min-width:0"><span class="l" id="seatl">Seats</span><div class="stp" role="group" aria-labelledby="seatl"><button type="button" id="dec" aria-label="Fewer seats">&minus;</button><output id="qty" aria-live="polite">2</output><button type="button" id="inc" aria-label="More seats">+</button></div></div>
     <button class="btn" type="button" id="gen-all">Generate all five cards</button>
   </div>
   <div class="cgrid" id="cgrid"></div>
-  <p class="fine" style="margin-top:22px">Demo cards: the event, the venue and the address are made up, and nothing here is a real ticket.</p>
+  <p class="fine" style="margin-top:22px">Demo cards: the event is made up, and nothing here is a real ticket. The address shown is a real public museum used only as a stand-in; no event is scheduled there and it is not affiliated.</p>
 </div></section>
 
 <section class="blk" id="pick" aria-labelledby="h-pick"><div class="wrap">
@@ -182,7 +182,7 @@ footer a{color:var(--ink);text-decoration-color:var(--a);text-underline-offset:3
 </div></section>
 </main>
 
-<footer><div class="wrap">Concept comps for a monthly listening party. Every DJ and venue shown is fictional, the checkout is a demo and nothing is for sale. Under the hood: <a href="../design/brand-boards.html">brand boards</a> · <a href="../design/wireframes.html">wireframes</a> · <a href="../design/REQUIREMENTS-MAP.html">requirements map</a> · <a href="../design/UX-AUDIT.html">UX audit</a>.</div></footer>
+<footer><div class="wrap">Concept comps for a monthly listening party. Every DJ and venue shown is fictional, the checkout is a demo and nothing is for sale. Under the hood: <a href="../design/brand-boards.html">brand boards</a> · <a href="../design/wireframes.html">wireframes</a> · <a href="../design/REQUIREMENTS-MAP.html">requirements map</a> · <a href="../design/UX-AUDIT.html">UX audit</a> · <a href="../design/SECURE-CARD-FLOW.html">secure card flow</a> · <a href="../site/door.html">door check-in (staff demo)</a>.</div></footer>
 
 <script src="../site/edition.js"></script><script>(window.EDS=window.EDS||[]).push(window.LR_EDITION)</script>
 <script src="02-led-stage/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
@@ -191,8 +191,10 @@ footer a{color:var(--ink);text-decoration-color:var(--a);text-underline-offset:3
 <script src="05-brass-night/edition.js"></script><script>EDS.push(window.LR_EDITION)</script>
 <script>window.LR_NO_THEME=true;</script>
 <script src="../site/assets/js/vendor/qrcode.js"></script>
+<script src="../site/assets/js/lr-ticket.js"></script>
 <script src="../site/assets/js/lr-shaders.js"></script>
 <script src="../site/assets/js/lr-core.js"></script>
+<script src="../site/assets/js/lr-api-mock.js"></script>
 <script src="../site/assets/js/lr-card.js"></script>
 <script>
 (function () {
@@ -246,7 +248,7 @@ footer a{color:var(--ink);text-decoration-color:var(--a);text-underline-offset:3
     $('#c-name').textContent = it.m.num + ' · ' + it.m.name;
     $('#c-line').textContent = it.E.dj.name + ': ' + it.m.line;
     $('#c-meta').innerHTML = '<span>' + esc(it.m.motif) + '</span><span>' + esc(it.m.font) + '</span><span>' + esc(it.m.fam) + '</span>';
-    $('#open').href = 'review.html?skin=' + (i + 1);
+    $('#open').href = 'review.html?skin=' + (i + 1); $('#try').href = it.m.url + 'pay.html';
     frame.title = 'Preview of concept ' + it.m.num + ', ' + it.m.name; favBtn();
   }
   function select(i) { if (i === S.sel && ready) return; paint(i); go(i); }
@@ -301,7 +303,7 @@ footer a{color:var(--ink);text-decoration-color:var(--a);text-underline-offset:3
     setTimeout(function () {
       tk.setAttribute('data-state', 'pending'); k('state').textContent = 'Processing';
       setTimeout(function () {
-        tk.setAttribute('data-state', 'confirmed'); k('state').textContent = 'Confirmed'; k('lockLabel').textContent = 'Unlocked'; tk.classList.add('is-unlocking');
+        tk.setAttribute('data-state', 'confirmed'); k('state').textContent = 'Paid'; k('lockLabel').textContent = 'Address ready'; tk.classList.add('is-unlocking'); k('area').hidden = false; k('area').textContent = E.event.venueArea; tk.querySelector('.tk-loc').classList.add('is-revealed');
         k('qr').innerHTML = LR.qrSVG(LR.cardPayload(E, ref, qty));
         LR.scramble(k('addr'), LR.cardAddress(E), 1000, function () { slot.querySelector('[data-act="save"]').disabled = false; });
         if (LR.reduce) slot.querySelector('[data-act="save"]').disabled = false;

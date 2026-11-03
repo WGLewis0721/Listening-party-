@@ -94,10 +94,10 @@ td:first-child{white-space:nowrap}
 <tr>
 <td>P9</td>
 <td>Location revealed only to buyers</td>
-<td>Blurred decoy on the hero ticket (real address is never in the hero DOM); the pay page decrypts it in place, turns the status dot green and adds a QR; share excludes it</td>
-<td><code>.tk-addr</code>, <code>lr-pay.js</code></td>
-<td>Peak-End, Doherty</td>
-<td>Pay flow test: locked → pending → confirmed → still confirmed after reload</td>
+<td>Hold → Pay → Unlock. The address is not in the page, the config, the email or the exports; the server releases it only after Square confirms payment and only from 3 hours before doors, behind a hold-to-reveal under a live watermark. Reveals are capped and logged. The door needs a rotating code and the name on the list</td>
+<td><code>lr-pay.js</code>, <code>lr-api-*.js</code>, <code>server/</code></td>
+<td>Peak-End, Doherty, honesty about limits</td>
+<td>33 browser checks on three skins and phone width; 27 SQL checks on PostgreSQL 16</td>
 </tr>
 <tr>
 <td>B1</td>
@@ -126,10 +126,10 @@ td:first-child{white-space:nowrap}
 <tr>
 <td>B4</td>
 <td>Link to a separate payment page</td>
-<td>Both buttons go to <code>pay.html</code>; <code>payment.mode = 'link'</code> swaps in a Stripe or Square link</td>
-<td><code>cta.pay</code>, <code>payment</code></td>
+<td>Both buttons go to <code>pay.html</code>: hold seats, hand off to Square's hosted checkout, return to the same card. <code>payment.mode = 'live'</code> switches from the simulator to the Square server</td>
+<td><code>cta.pay</code>, <code>payment</code>, <code>server/</code></td>
 <td>Jakob (checkout looks like checkout)</td>
-<td>Pay flow test</td>
+<td>Pay flow tests on three skins and phone width</td>
 </tr>
 <tr>
 <td>B5</td>
@@ -218,7 +218,7 @@ td:first-child{white-space:nowrap}
 </table></div>
 <h2>Requirements that need you</h2>
 <ul>
-<li><strong>P8 and B4 in production:</strong> the demo checkout takes no payment. Connect Stripe or Square (see <code>HANDOFF.md</code>).</li>
-<li><strong>P9 in production:</strong> the address must come from your server after payment is confirmed. In the demo it sits in <code>edition.js</code>, where anyone can read it.</li>
-<li><strong>P6:</strong> wire <code>seatsLeft</code> to real inventory or leave it <code>null</code>.</li>
+<li><strong>P8 and B4 in production:</strong> deploy <code>server/</code> and connect Square (sandbox first). The checkout today is simulated.</li>
+<li><strong>P9 in production:</strong> put the real address in the database, not in any file. Remove the simulator and the demo clock from the pay and door pages.</li>
+<li><strong>P6:</strong> <code>seatsLeft</code> stays <code>null</code> (no fake scarcity). The server enforces the real capacity.</li>
 </ul></div></body></html>

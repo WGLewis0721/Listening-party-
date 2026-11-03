@@ -4,6 +4,7 @@ A monthly listening party for Montgomery, as a one-page, scroll-driven site. One
 
 - **Live site:** `site/` (Pages deploys it from `main`). A fictional DJ, Nova Vale, in the Quiet Spectra skin (Mirror Finish tokens).
 - **Client review site:** `concepts/` (published at `/concepts/`). One page where a client previews all five concepts live, flips between skins with a switcher that keeps their scroll position, generates the customer card for any concept (or all five), and picks a favorite and a second choice. `concepts/review.html` is the full-screen version with the skin switcher.
+- **Secure card flow:** hold seats, pay with Square, then unlock. The address never reaches the browser until 3 hours before doors, behind a hold-to-reveal and a live watermark; a rotating code and a door check mean a screenshot does not get anyone in. `design/SECURE-CARD-FLOW.md`, `site/door.html`, and the server in `server/`.
 - **Design work:** `design/` has the brand boards, wireframes, requirements map, UX audit and research.
 - **Tools:** `tools/` has the gallery and docs builders and the QA scripts.
 
@@ -39,7 +40,7 @@ No build step. Fonts, GSAP and the QR library are self-hosted, so there are no t
 
 ## Status
 
-- The checkout is a **demo**: nothing is charged and no card is collected. See `HANDOFF.md` for connecting Stripe or Square.
+- The checkout is **simulated**: nothing is charged and no card is collected. The Square server in `server/` is written and tested statically but not deployed. See `HANDOFF.md`.
 - The page is `noindex` until you remove that meta tag.
 - Quality checks (layout, text size, tap targets, scroll states, contrast over the live art, Reduce Motion, the pay flow) are scripted in `tools/qa/` and reported in `design/UX-AUDIT.md`. Real-device and screen-reader testing are not done yet.
 

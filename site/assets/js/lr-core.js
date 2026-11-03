@@ -12,6 +12,18 @@
   LR.mins = function (hhmm) { var p = String(hhmm).split(':'); return (+p[0]) * 60 + (+p[1]); };
   LR.time12 = function (hhmm) { var p = String(hhmm).split(':'), h = +p[0], ap = h >= 12 && h < 24 ? 'PM' : 'AM'; h = h % 12 || 12; return h + ':' + p[1] + ' ' + ap; };
   LR.clock = function (m) { m = Math.round(m); var h = Math.floor(m / 60) % 24, mm = m % 60; var ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return { t: h + ':' + (mm < 10 ? '0' : '') + mm, ap: ap }; };
+  LR.evOffsetMin = function (Ed) { var m = /([+-])(\d\d):(\d\d)$/.exec((Ed || E).event.start); return m ? (m[1] === '-' ? -1 : 1) * (+m[2] * 60 + +m[3]) : 0; };
+  /* event-local wall time from an epoch (the event's own zone, not the viewer's) */
+  LR.fmtEvent = function (ms, Ed) {
+    var d = new Date(ms + LR.evOffsetMin(Ed) * 60000), D = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var h = d.getUTCHours(), mi = d.getUTCMinutes(), se = d.getUTCSeconds(), ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+    var p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    return { day: D[d.getUTCDay()], date: M[d.getUTCMonth()] + ' ' + d.getUTCDate(), time: h + ':' + p2(mi) + ' ' + ap, clock: h + ':' + p2(mi) + ':' + p2(se) + ' ' + ap };
+  };
+  LR.fmtDur = function (ms) {
+    ms = Math.max(0, ms); var s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), x = s % 60, p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    if (d) return d + 'd ' + h + 'h'; if (h) return h + 'h ' + p2(m) + 'm'; return m + 'm ' + p2(x) + 's';
+  };
   LR.money = function (n) { return '$' + Number(n).toFixed(2); };
   LR.clamp = function (v, a, b) { return Math.min(b == null ? 1 : b, Math.max(a == null ? 0 : a, v)); };
 
@@ -64,9 +76,12 @@
       '<p class="tk-sub">' + LR.esc(d.tagline) + '</p>' +
       '<dl class="tk-meta"><div><dt>Date</dt><dd>' + LR.esc(ev.dateLabel) + '</dd></div><div><dt>Doors</dt><dd>' + LR.time12(ev.doors) + '</dd></div><div><dt>Seats</dt><dd data-k="seats">' + (o.seatsText || (ev.capacity + ' total')) + '</dd></div></dl>' +
       '<ul class="tk-lines"><li><span>Advance ticket × <i style="font-style:normal" data-k="qty">' + qty + '</i></span><b data-k="sub">' + LR.money(ev.price * qty) + '</b></li><li><span>Fees</span><b>' + LR.money(ev.fee || 0) + '</b></li></ul>' +
-      '<div class="tk-loc"><p class="label"><span>Location</span><em data-k="lockLabel">' + LR.esc(ev.venueLockedLabel) + '</em></p>' +
-      '<p class="tk-addr" data-k="addr"><span aria-hidden="true">' + LR.esc(ev.venueDecoy) + '</span><span class="sr">' + LR.esc(ev.venueLockedLabel) + '</span></p></div>' +
-      '<div class="tk-qr" data-k="qr" role="img" aria-label="Entry QR code"></div>' +
+      '<div class="tk-loc" data-k="loc"><p class="label"><span>Location</span><em data-k="lockLabel">' + LR.esc(ev.venueLockedLabel) + '</em></p>' +
+      '<p class="tk-area" data-k="area" hidden></p>' +
+      '<p class="tk-addr" data-k="addr"><span aria-hidden="true">' + LR.esc(ev.venueDecoy) + '</span><span class="sr">' + LR.esc(ev.venueLockedLabel) + '</span></p>' +
+      '<div class="tk-act" data-k="act" hidden></div><div class="tk-wm" data-k="wm" aria-hidden="true"></div></div>' +
+      '<div class="tk-door" data-k="door" hidden></div>' +
+      '<div class="tk-qrwrap"><div class="tk-qr" data-k="qr" role="img" aria-label="Entry code"></div><p class="tk-qrcap" data-k="qrcap"></p></div>' +
       '<div class="tk-perf"></div>' +
       '<div class="tk-foot" data-k="foot">' + (o.foot || '') + '</div>' +
       (o.note ? '<p class="tk-note">' + o.note + '</p>' : '') +

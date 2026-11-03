@@ -123,6 +123,7 @@ footer{{padding:28px 0 48px;border-top:1px solid var(--line);font:500 12px/1.7 v
     <li><a href="{P['D']}REQUIREMENTS-MAP.html"><b>Requirements to UX</b><span>Every ask from the community post and your brief, mapped to a UI decision and a UX law.</span></a></li>
     <li><a href="{P['D']}UX-AUDIT.html"><b>UX audit</b><span>Seven fundamentals and the laws of UX, measured on all five skins, with what failed and how it was fixed.</span></a></li>
     <li><a href="{P['D']}RESEARCH.html"><b>Research</b><span>The design references, the techniques, the type choices, and what I could and could not verify.</span></a></li>
+    <li><a href="{P['D']}SECURE-CARD-FLOW.html"><b>Secure card flow</b><span>Hold, pay with Square, unlock: how the address stays secret, what a screenshot can and cannot do, and what is tested.</span></a></li>
     <li><a href="{P['D']}BRAND-SYSTEM.html"><b>Brand system</b><span>How a promoter produces a new edition in about fifteen minutes without breaking quality.</span></a></li>
     {extra}
   </ul>

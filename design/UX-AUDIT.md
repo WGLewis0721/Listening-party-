@@ -113,6 +113,23 @@ These are the defects, in the order they were found. Several were found by the m
 
 Defects found on the way: the device toggle read progress after the resize and drifted (0.70 to 0.84), and the shader's new `destroy()` plus a manual `loseContext()` double-freed the GL context and logged warnings. Both fixed.
 
+## The secure card flow (Hold, Pay, Unlock)
+
+| Check | Result |
+| --- | --- |
+| 33 end-to-end browser checks, repeated three times, on the base skin | All pass each time |
+| Same flow on two more skins, and at 390px wide | All pass |
+| The address is absent from the page before payment, while held, after payment (before T-3h), after the tab hides, after the reveals are used, and after a reload | Asserted at each point |
+| The address is absent from the public edition config, the saved card image and the calendar file | Asserted (the image's drawn text is captured and checked) |
+| The server refuses an early reveal, a wrong token and a 4th reveal even when the UI is bypassed | Pass |
+| A quick tap does not reveal; a one-second hold does; hiding the tab removes the address from the DOM | Pass |
+| Door: admits the paid name, refuses a second scan, refuses a code 5 minutes old, refuses a made-up code; the card flips to Checked in by itself | Pass |
+| SQL on PostgreSQL 16: 8 parallel buyers for 1 seat, expiry, idempotent payment, resold-seat refund flag, 6 parallel reveals against a cap of 3, one check-in, anon cannot read or call anything | 27 of 27 |
+| Shared logic (rotating code, schedule, reveal rules, Square signature, tokens) | 9 of 9 |
+| Edge functions | Type-check clean with Deno; never deployed |
+
+Defects found on the way: the 30-second code refresh rebuilt the hold-to-reveal button and would have cancelled a hold in progress (now idempotent); the demo's "scan the latest card" picked a seeded guest because of the jumped clock (simulator fix); and the status chip wrapped the card header at 390px (shorter labels).
+
 ## Motion safety
 
 Nothing flashes. The fastest repeating motion is the final button's 2.2s pulse ring (0.45 Hz). The LED rings travel at about 0.5 Hz, the foil sheen takes 7s, the dust and dots drift. Under Reduce Motion every animation stops, the shaders render one still frame, and the page becomes a stacked static layout.
@@ -123,5 +140,6 @@ Nothing flashes. The fastest repeating motion is the final button's 2.2s pulse r
 2. **Assistive technology.** VoiceOver and TalkBack have not been run. Chapter changes are not announced to screen readers, and the decoy address has a spoken alternative but this is untested.
 3. **200% zoom and `prefers-contrast`** are untested.
 4. **Keyboard reach.** The ticket button is hidden until the last beat, so a keyboard user reaches it with the "Skip to reserve" link or the Ticket chapter. This is deliberate and works, but is worth a real user test.
-5. **Payment.** Demo only. The Stripe or Square link mode is an untested template. The address is readable in `edition.js` and must move server-side for a real night.
+5. **Payment.** Simulated. The Square server is written, type-checked and database-tested but never run against Square: do a sandbox pass and verify the webhook signature scheme with Square's SDK helper. The address is no longer in any file; it must be loaded into the database.
+7. **Hold-to-reveal on real devices and with a screen reader** is untested. There is a keyboard path, a tap option and a screen-reader path.
 6. **Fabricated scarcity.** `seatsLeft` is `null`, so no count is shown. Wire it to real inventory or leave it off.

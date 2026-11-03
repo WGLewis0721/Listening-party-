@@ -35,10 +35,10 @@ window.LR_EDITION = {
     "price": 25,
     "fee": 0,
     "maxQty": 4,
-    "venueName": "The Annex Room",
-    "venueAddress": "100 Placeholder Ave, Montgomery, AL 36104",
+    "venueArea": "Blount Cultural Park, Montgomery",
+    "release": { "unlockLeadMin": 180, "doorPhraseLeadMin": 30 },
     "venueDecoy": "Venue name · 000 Street name, Montgomery, AL",
-    "venueLockedLabel": "Unlocks at checkout"
+    "venueLockedLabel": "Address 3h before doors"
   },
   "set": [
     {
@@ -93,13 +93,13 @@ window.LR_EDITION = {
       "The room sings back, softly",
       "Come early, stay late"
     ],
-    "lockNote": "The address is released to ticket holders at checkout. No exceptions."
+    "lockNote": "The address unlocks on your card three hours before doors. No exceptions."
   },
   "closing": {
-    "headline": "Sixty seats. One golden hour. Reserve to unlock the address.",
+    "headline": "Sixty seats. One golden hour. Reserve now, the address unlocks 3 hours before doors.",
     "assure": [
       "Advance tickets only, no door sales",
-      "The address unlocks at checkout",
+      "The address unlocks 3 hours before doors",
       "Light snacks and drinks inside"
     ],
     "note": "Advance only · No door sales"

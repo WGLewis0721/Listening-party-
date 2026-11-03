@@ -6,7 +6,7 @@ import os, re, sys, markdown
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.join(HERE, '..', 'design')
 A = sys.argv[2] if len(sys.argv) > 2 else '../site/assets/'
-DOCS = ['RESEARCH', 'BRAND-SYSTEM', 'REQUIREMENTS-MAP', 'UX-AUDIT', 'ARTIST-REFERENCES']
+DOCS = ['RESEARCH', 'BRAND-SYSTEM', 'REQUIREMENTS-MAP', 'UX-AUDIT', 'SECURE-CARD-FLOW', 'ARTIST-REFERENCES']
 
 TPL = '''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>{title} · Listening Room</title><link rel="stylesheet" href="{A}css/fonts.css">

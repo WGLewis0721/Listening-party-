@@ -156,7 +156,7 @@ button{font:inherit;color:inherit}
 .tk-plate canvas{position:absolute;inset:0;width:100%;height:100%}
 .tk-plate::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,color-mix(in srgb,var(--surface) 45%,transparent) 0,transparent 35%,color-mix(in srgb,var(--surface) 80%,transparent) 78%,var(--surface) 100%)}
 .tk-head{position:absolute;z-index:2;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 20px;font:700 12px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;text-shadow:0 1px 14px rgba(0,0,0,.7)}
-.tk-head span:first-child{color:var(--ink)}
+.tk-head span:first-child{color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .tk-state{display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
 .tk-state::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--acc)}
 .tk[data-state="confirmed"] .tk-state::before{background:#5ee08f;box-shadow:0 0 10px #5ee08f}
@@ -334,3 +334,80 @@ noscript .ns{padding:40px var(--pad);font-size:1.1rem}
   .pay-form .h2{max-width:none;font-size:clamp(2.2rem,11vw,3.2rem)}
 }
 @media (prefers-reduced-motion:reduce){.tk.is-unlocking .tk-sweep{animation:none}.tk-addr{transition:none}}
+
+/* ───────── secure card flow: held → paid → address ready → doors → checked in ───────── */
+.tk-loc{position:relative;overflow:hidden}
+.tk-area{margin:6px 0 0;font-weight:700;font-size:1.02rem;line-height:1.35}
+.tk[data-state="confirmed"] .tk-loc:not(.is-revealed) .tk-addr{display:none}
+.tk-act{display:grid;gap:10px;margin-top:12px}
+.tk-act[hidden],.tk-area[hidden],.tk-door[hidden]{display:none}
+.tk-wm{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;background-repeat:repeat;transition:opacity .2s}
+.tk-loc.is-revealed .tk-wm{opacity:1}
+.tk-loc.is-revealed .tk-addr{position:relative;z-index:1}
+.tk-live{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font:600 12px/1.3 var(--mono);letter-spacing:.06em;color:var(--muted);font-variant-numeric:tabular-nums}
+.tk-bar{height:3px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:8px}
+.tk-bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .9s linear}
+.tk-door{margin-top:14px;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--acc) 14%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 50%,transparent)}
+.tk-door .label{display:block}
+.tk-door b{display:block;margin-top:6px;font-family:var(--display);font-weight:var(--name-weight);font-style:var(--name-style);text-transform:var(--name-transform);font-size:1.7rem;line-height:1;letter-spacing:var(--name-track)}
+.tk-qrwrap{text-align:center}
+.tk-qrcap{display:none;margin:8px 0 0;font:600 12px/1.4 var(--mono);letter-spacing:.06em;color:var(--muted);font-variant-numeric:tabular-nums}
+.tk[data-state="confirmed"] .tk-qrcap:not(:empty){display:block}
+.tk-qr{position:relative}
+.tk-qr::after{content:"";position:absolute;left:8px;right:8px;bottom:3px;height:3px;border-radius:2px;background:#0b0b0c;transform-origin:left;transform:scaleX(var(--qr-left,1))}
+.tk[data-phase="in"] .tk-qr{opacity:.35}
+.reveal-btn{--hold:0%;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;width:100%;padding:0 20px;border:0;border-radius:999px;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);font:700 15px/1 var(--body);cursor:pointer;overflow:hidden;isolation:isolate;box-shadow:inset 0 0 0 1px var(--line-strong);touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.reveal-btn::before{content:"";position:absolute;inset:0;z-index:-1;width:var(--hold);background:var(--acc);opacity:.9}
+.reveal-btn[data-held="1"]{color:var(--acc-on)}
+.reveal-btn:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.reveal-btn[disabled]{opacity:.55;cursor:progress}
+.tk-act .fine{margin:0;font-size:.82rem}
+.tap{display:flex;align-items:center;gap:10px;min-height:44px;font-size:.85rem;color:var(--muted);cursor:pointer}
+.tap input{width:20px;height:20px;accent-color:var(--acc)}
+/* pay page panels */
+.panel{margin-top:clamp(20px,3vh,32px);display:grid;gap:16px;max-width:540px;padding:clamp(18px,2.4vw,28px);border-radius:var(--r);background:color-mix(in srgb,var(--bg) 66%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:inset 0 0 0 1px var(--line)}
+.panel[hidden]{display:none}
+.panel h2{margin:0;font:700 1.05rem/1.3 var(--body)}
+.hold{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--line);font:600 12px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.hold b{font-size:1.4rem;letter-spacing:.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.banner{margin:0;padding:12px 14px;border-radius:12px;font-size:.92rem;background:color-mix(in srgb,#ff6b6b 16%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,#ff6b6b 50%,transparent)}
+.banner[hidden]{display:none}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid var(--line-strong);border-top-color:var(--acc);animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tl{margin:0;padding:0;list-style:none;display:grid;gap:0}
+.tl li{position:relative;display:grid;grid-template-columns:28px 1fr;gap:12px;padding:0 0 18px}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:"";position:absolute;left:13px;top:26px;bottom:0;width:2px;background:var(--line)}
+.tl li:last-child::before{display:none}
+.tl .dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 12px/1 var(--mono);box-shadow:inset 0 0 0 2px var(--line-strong);background:var(--bg);color:var(--muted)}
+.tl li.done .dot{background:var(--acc);color:var(--acc-on);box-shadow:none}
+.tl li.now .dot{box-shadow:inset 0 0 0 2px var(--acc);color:var(--ink)}
+.tl b{display:block;font-size:.98rem}
+.tl span{display:block;color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
+.tl li.now span{color:var(--ink)}
+.acts2{display:flex;flex-wrap:wrap;gap:10px}
+.acts2 .btn{flex:1 1 180px}
+/* simulated Square checkout */
+.sq{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.sq[hidden]{display:none}
+.sq-box{width:min(100%,460px);border-radius:22px;background:#fff;color:#111;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.sq-sim{margin:0;padding:10px 16px;background:#ffd34d;color:#111;font:700 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;text-align:center}
+.sq-in{padding:24px;display:grid;gap:16px}
+.sq-in h2{margin:0;font:700 1.25rem/1.3 var(--body)}
+.sq-in .row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #e5e5e5;font-size:.95rem}
+.sq-in .row b{font-variant-numeric:tabular-nums}
+.sq-in p{margin:0;font-size:.85rem;color:#555}
+.sq-in .btn{background:#111;color:#fff;min-height:52px}.sq-in .btn.alt{background:#fff;color:#111;box-shadow:inset 0 0 0 1px #bbb}
+.sq-in .btn::before{display:none}
+.sq-in :focus-visible{outline:2px solid #1a6cff}
+/* demo clock */
+.dclock{position:fixed;left:12px;bottom:12px;z-index:150;font-family:var(--mono)}
+.dclock>button{min-height:44px;padding:0 16px;border:0;border-radius:999px;background:#ffd34d;color:#111;font:700 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.dclock .box{position:absolute;left:0;bottom:54px;width:min(320px,calc(100vw - 24px));padding:16px;border-radius:16px;background:#111114;color:#f4f1ea;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),0 30px 60px rgba(0,0,0,.6);display:grid;gap:10px}
+.dclock .box[hidden]{display:none}
+.dclock .box p{margin:0;font-size:12px;line-height:1.5;color:#b5b0a4}
+.dclock .now{font:700 15px/1.3 var(--mono);color:#fff;font-variant-numeric:tabular-nums}
+.dclock .box button{min-height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.1);color:#f4f1ea;font:600 13px/1.2 var(--body);cursor:pointer;text-align:left;padding:0 14px}
+.dclock .box button:hover{background:rgba(255,255,255,.18)}
+@media (max-width:899px){.pay-card .tk-qr{width:120px;height:120px}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}.tk-bar i{transition:none}}

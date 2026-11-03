@@ -431,6 +431,58 @@ td:first-child{white-space:nowrap}
 </tbody>
 </table></div>
 <p>Defects found on the way: the device toggle read progress after the resize and drifted (0.70 to 0.84), and the shader's new <code>destroy()</code> plus a manual <code>loseContext()</code> double-freed the GL context and logged warnings. Both fixed.</p>
+<h2>The secure card flow (Hold, Pay, Unlock)</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>33 end-to-end browser checks, repeated three times, on the base skin</td>
+<td>All pass each time</td>
+</tr>
+<tr>
+<td>Same flow on two more skins, and at 390px wide</td>
+<td>All pass</td>
+</tr>
+<tr>
+<td>The address is absent from the page before payment, while held, after payment (before T-3h), after the tab hides, after the reveals are used, and after a reload</td>
+<td>Asserted at each point</td>
+</tr>
+<tr>
+<td>The address is absent from the public edition config, the saved card image and the calendar file</td>
+<td>Asserted (the image's drawn text is captured and checked)</td>
+</tr>
+<tr>
+<td>The server refuses an early reveal, a wrong token and a 4th reveal even when the UI is bypassed</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>A quick tap does not reveal; a one-second hold does; hiding the tab removes the address from the DOM</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>Door: admits the paid name, refuses a second scan, refuses a code 5 minutes old, refuses a made-up code; the card flips to Checked in by itself</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>SQL on PostgreSQL 16: 8 parallel buyers for 1 seat, expiry, idempotent payment, resold-seat refund flag, 6 parallel reveals against a cap of 3, one check-in, anon cannot read or call anything</td>
+<td>27 of 27</td>
+</tr>
+<tr>
+<td>Shared logic (rotating code, schedule, reveal rules, Square signature, tokens)</td>
+<td>9 of 9</td>
+</tr>
+<tr>
+<td>Edge functions</td>
+<td>Type-check clean with Deno; never deployed</td>
+</tr>
+</tbody>
+</table></div>
+<p>Defects found on the way: the 30-second code refresh rebuilt the hold-to-reveal button and would have cancelled a hold in progress (now idempotent); the demo's "scan the latest card" picked a seeded guest because of the jumped clock (simulator fix); and the status chip wrapped the card header at 390px (shorter labels).</p>
 <h2>Motion safety</h2>
 <p>Nothing flashes. The fastest repeating motion is the final button's 2.2s pulse ring (0.45 Hz). The LED rings travel at about 0.5 Hz, the foil sheen takes 7s, the dust and dots drift. Under Reduce Motion every animation stops, the shaders render one still frame, and the page becomes a stacked static layout.</p>
 <h2>Open issues (not done)</h2>
@@ -439,6 +491,7 @@ td:first-child{white-space:nowrap}
 <li><strong>Assistive technology.</strong> VoiceOver and TalkBack have not been run. Chapter changes are not announced to screen readers, and the decoy address has a spoken alternative but this is untested.</li>
 <li><strong>200% zoom and <code>prefers-contrast</code></strong> are untested.</li>
 <li><strong>Keyboard reach.</strong> The ticket button is hidden until the last beat, so a keyboard user reaches it with the "Skip to reserve" link or the Ticket chapter. This is deliberate and works, but is worth a real user test.</li>
-<li><strong>Payment.</strong> Demo only. The Stripe or Square link mode is an untested template. The address is readable in <code>edition.js</code> and must move server-side for a real night.</li>
+<li><strong>Payment.</strong> Simulated. The Square server is written, type-checked and database-tested but never run against Square: do a sandbox pass and verify the webhook signature scheme with Square's SDK helper. The address is no longer in any file; it must be loaded into the database.</li>
+<li><strong>Hold-to-reveal on real devices and with a screen reader</strong> is untested. There is a keyboard path, a tap option and a screen-reader path.</li>
 <li><strong>Fabricated scarcity.</strong> <code>seatsLeft</code> is <code>null</code>, so no count is shown. Wire it to real inventory or leave it off.</li>
 </ol></div></body></html>
