@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Listening Room · Concept 04 · Disco-funk chrome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Manrope:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#0a0a0a;--surface:#161616;--ink:#f2f2f2;--muted:#a3a3a3;--accent:#d7dce3;--accent-on:#0a0a0a;--display:'Michroma',system-ui,sans-serif;--mono:ui-monospace,Menlo,monospace;--body:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;--ease:cubic-bezier(.2,.7,.2,1);--tap:48px;--radius:14px;--p:0;--c:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+.track{height:300vh;position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,5vw,80px);align-items:center;padding:clamp(72px,11vh,96px) clamp(20px,5vw,80px) clamp(20px,4vh,40px)}
+.stage::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(215,220,227,.06) 25%,transparent 25% 50%,rgba(215,220,227,.06) 50% 75%,transparent 75%) 0 0/64px 64px,var(--bg);z-index:0}
+.stage>*{position:relative;z-index:1}
+.top{position:absolute;top:clamp(16px,3vh,28px);left:clamp(20px,5vw,80px);right:clamp(20px,5vw,80px);display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);z-index:2}
+.top b{color:var(--accent);font-weight:700}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+.dj{font-family:var(--display);font-weight:400;font-size:clamp(3.2rem,9vw,7.2rem);line-height:.92;letter-spacing:-.01em;transform:scale(calc(1.05 - var(--p) * .05));transform-origin:left center}
+.vibe{margin-top:18px;font-size:clamp(1.02rem,1.6vw,1.25rem);line-height:1.5;color:var(--muted);max-width:34ch}
+.setlist{list-style:none;margin-top:28px;border-top:1px solid color-mix(in srgb,var(--ink) 18%,transparent)}
+.setlist li{display:grid;grid-template-columns:76px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid color-mix(in srgb,var(--ink) 18%,transparent)}
+.setlist time{font-family:var(--mono);font-size:14px;color:var(--accent);padding-top:2px}
+.setlist span{color:var(--muted);font-size:15px}
+.setlist b{color:var(--ink);font-weight:700}
+.ctas{margin-top:30px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;min-height:var(--tap);padding:0 24px;border-radius:999px;background:var(--accent);color:var(--accent-on);font-weight:700;font-size:16px;text-decoration:none;transition:filter .2s var(--ease)}
+.btn:hover{filter:brightness(1.07)}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.cap{font-size:14px;color:var(--muted)}
+.note{margin-top:18px;font-size:14px;line-height:1.5;color:var(--muted);max-width:52ch}
+.card-wrap{perspective:1200px;display:flex;justify-content:center}
+.ticket{position:relative;width:min(100%,420px);background:var(--surface);border:1px solid color-mix(in srgb,var(--ink) 14%,transparent);border-radius:var(--radius);overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.45);transform-origin:50% 100%;transform:translateY(calc((1 - var(--c)) * 18vh)) rotateX(calc((1 - var(--c)) * 12deg));opacity:calc(.35 + .65 * var(--c));will-change:transform,opacity}
+.ticket-art{position:relative;height:200px;background:linear-gradient(135deg,#3a3f47 0%,#d7dce3 30%,#5b616b 46%,#f2f2f2 60%,#2a2e35 100%);padding:20px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.ticket-art::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,var(--surface),transparent 70%);z-index:0}
+.ticket-art>*{position:relative;z-index:1}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.ticket h2{font-family:var(--display);font-weight:400;font-size:40px;line-height:1;margin-top:8px;color:var(--ink)}
+.rows{padding:18px 20px 6px;display:grid;gap:12px}
+.rows>div{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:baseline;padding-bottom:12px;border-bottom:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
+.rows dt{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.rows dd{font-weight:600;font-size:15px;line-height:1.4}
+.locked{filter:blur(5px);user-select:none}
+.lock-tag{display:inline-block;margin-left:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.ticket-foot{padding:14px 20px 18px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+.vinyl,.sheen{display:none;position:absolute;pointer-events:none;z-index:0}
+.motion-spin .vinyl{display:block;right:-110px;top:-110px;width:280px;height:280px;border-radius:50%;background:repeating-radial-gradient(circle,rgba(212,162,76,.22) 0 1px,transparent 1px 8px);animation:spin 22s linear infinite}
+.motion-sweep .sheen{display:block;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:sweep 4.5s ease-in-out infinite}
+.motion-pulse .btn{animation:beat 1.6s ease-in-out infinite}
+.motion-drift .stage::before{background-size:120% 120%;animation:drift 16s ease-in-out infinite alternate}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes sweep{0%{left:-60%}60%,100%{left:130%}}
+@keyframes beat{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}50%{box-shadow:0 0 0 14px transparent}}
+@keyframes drift{from{background-position:0 0}to{background-position:-40px 30px}}
+@media (max-width:820px){
+ .track{height:260vh}
+ .stage{grid-template-columns:1fr;align-content:start;gap:14px;padding-top:70px}
+ .top{font-size:10px;letter-spacing:.1em}
+ .top span:last-child{display:none}
+ .eyebrow{margin-bottom:8px}
+ .dj{font-size:clamp(2.6rem,13vw,3.8rem)}
+ .vibe,.note{display:none}
+ .setlist{margin-top:14px}
+ .setlist li{padding:6px 0;grid-template-columns:64px 1fr}
+ .ctas{margin-top:18px}
+ .ticket-art{height:110px;padding:14px}
+ .ticket h2{font-size:28px}
+ .rows{padding:10px 16px 2px;gap:6px}
+ .rows>div{padding-bottom:8px}
+ .rows>div:nth-child(2){display:none}
+ .ticket-foot{padding:10px 16px 12px}
+}
+@media (prefers-reduced-motion:reduce){
+ *{animation:none!important;transition:none!important}
+ .track{height:auto}
+ .stage{position:relative;height:auto;min-height:100vh}
+}
+.dj{text-transform:uppercase;font-size:clamp(2.2rem,5.6vw,4.4rem);letter-spacing:.04em;line-height:1.05}
+</style>
+</head>
+<body class="motion-sweep">
+<div class="track" aria-label="Listening Room hero">
+ <main class="stage">
+  <header class="top"><span><b>Listening Room</b> · Edition 01</span><span>Disco-funk chrome</span></header>
+  <section class="copy">
+   <p class="eyebrow">Featured DJ · November 2026</p>
+   <h1 class="dj">Chrome Vector</h1>
+   <p class="vibe">Clean machine grooves, a chrome finish, no skips. Disco and funk, precisely cut.</p>
+   <ol class="setlist"><li><time>8:00</time><span><b>Doors</b> · Chrome lights, drinks, low room hum</span></li><li><time>8:45</time><span><b>Opening set</b> · Disco edits, 110 to 116 BPM</span></li><li><time>9:45</time><span><b>Featured set</b> · Funk and house, one long arc</span></li><li><time>10:45</time><span><b>Close</b> · Last record, last call</span></li></ol>
+   <div class="ctas">
+    <a class="btn" href="https://example.com/checkout/listening-room-ed01">Get advance tickets · $25 advance</a>
+    <span class="cap">60 seats · Thu, Nov 19, 2026 · 8:00 PM</span>
+   </div>
+   <p class="note">Advance tickets only. The address is sent to ticket holders, not posted publicly.</p>
+  </section>
+  <aside class="card-wrap" aria-label="Sample customer ticket">
+   <article class="ticket">
+    <div class="ticket-art"><span class="vinyl"></span><span class="sheen"></span><span class="kicker">Listening Room · Edition 01</span><h2>Chrome Vector</h2></div>
+    <dl class="rows">
+     <div><dt>Date</dt><dd>Thu, Nov 19, 2026 · 8:00 PM</dd></div>
+     <div><dt>Doors</dt><dd>8:00 PM, lights low by 9:00</dd></div>
+     <div><dt>Reference</dt><dd>LR-ED01-A7K2</dd></div>
+     <div><dt>Location</dt><dd><span class="locked">[Venue name] · [Street address], Montgomery, AL</span><span class="lock-tag">Unlocks at checkout</span></dd></div>
+    </dl>
+    <p class="ticket-foot"><span>Advance ticket</span><span>Awaiting payment</span></p>
+   </article>
+  </aside>
+ </main>
+</div>
+<script>
+(function(){
+ var track=document.querySelector('.track'),root=document.documentElement;
+ var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ function clamp(v){return Math.min(1,Math.max(0,v));}
+ function update(){
+  var max=Math.max(1,track.offsetHeight-window.innerHeight);
+  var p=reduce?1:clamp(window.scrollY/max);
+  root.style.setProperty('--p',p.toFixed(4));
+  root.style.setProperty('--c',clamp((p-.12)/.45).toFixed(4));
+ }
+ var queued=false;
+ window.addEventListener('scroll',function(){if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}},{passive:true});
+ window.addEventListener('resize',update);
+ update();
+})();
+</script>
+</body>
+</html>
