@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Listening Room · Wireframes</title><style>body{font-family:system-ui,Arial,sans-serif;background:#f4f2ee;color:#222;padding:32px;max-width:1300px;margin:auto}
+h1{font-size:28px;margin-bottom:6px}p.n{color:#555;line-height:1.6;max-width:80ch;margin-bottom:24px}
+.row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+figure{margin:0}figcaption{font:600 12px ui-monospace,Menlo,monospace;color:#555;margin-top:8px}
+.frame{position:relative;background:#fff;border:2px solid #333;border-radius:10px;padding:10px;overflow:hidden}
+.bar{height:22px;background:#ddd;border-radius:4px;margin-bottom:10px}
+.l{position:absolute;left:24px;top:48px;width:52%;display:grid;gap:10px}
+.r{position:absolute;right:24px;top:58px;width:36%;height:60%;background:#e6e6e6;border:2px solid #888;border-radius:10px;transform-origin:50% 100%}
+.l .sm{height:8px;width:30%;background:#aaa}.l .xl{height:44px;width:90%;background:#777;border-radius:4px}
+.l .md{height:10px;width:70%;background:#bbb}.list{display:grid;gap:6px}.list i{display:block;height:9px;background:#ccc}
+.cta{height:26px;width:55%;background:#333;border-radius:99px}
+.art{height:45%;background:#999}.rowsb{padding:8px;display:grid;gap:6px}.rowsb i{display:block;height:8px;background:#bbb}
+.frame.m .l{position:relative;left:auto;top:auto;width:auto}</style></head><body>
+<h1>Listening Room · Hero wireframes</h1>
+<p class="n">The hero is the only section. The page is a 300vh track with a sticky stage: copy stays on the left, and the ticket rises into place as you scroll. Scroll progress drives both the headline scale and the ticket reveal (ticket starts at 12% scroll and is fully revealed at 57%). Location stays blurred until checkout. Reduced motion shows the final state with no transforms.</p>
+<div class="row"><figure><div class="frame" style="width:560px;height:340px">
+<div class="bar"></div>
+<div class="l"><div class="sm"></div><div class="xl"></div><div class="md"></div><div class="list"><i></i><i></i><i></i><i></i></div><div class="cta"></div></div>
+<div class="r" style="transform:translateY(61.2px) rotateX(12.0deg);opacity:0.35"><div class="art"></div><div class="rowsb"><i></i><i></i><i></i><i></i></div></div>
+</div><figcaption>Scroll 0% · ticket 0% revealed</figcaption></figure><figure><div class="frame" style="width:560px;height:340px">
+<div class="bar"></div>
+<div class="l"><div class="sm"></div><div class="xl"></div><div class="md"></div><div class="list"><i></i><i></i><i></i><i></i></div><div class="cta"></div></div>
+<div class="r" style="transform:translateY(36.7px) rotateX(7.2deg);opacity:0.61"><div class="art"></div><div class="rowsb"><i></i><i></i><i></i><i></i></div></div>
+</div><figcaption>Scroll 30% · ticket 40% revealed</figcaption></figure><figure><div class="frame" style="width:560px;height:340px">
+<div class="bar"></div>
+<div class="l"><div class="sm"></div><div class="xl"></div><div class="md"></div><div class="list"><i></i><i></i><i></i><i></i></div><div class="cta"></div></div>
+<div class="r" style="transform:translateY(0.0px) rotateX(0.0deg);opacity:1.00"><div class="art"></div><div class="rowsb"><i></i><i></i><i></i><i></i></div></div>
+</div><figcaption>Scroll 60% · ticket 100% revealed</figcaption></figure><figure><div class="frame" style="width:560px;height:340px">
+<div class="bar"></div>
+<div class="l"><div class="sm"></div><div class="xl"></div><div class="md"></div><div class="list"><i></i><i></i><i></i><i></i></div><div class="cta"></div></div>
+<div class="r" style="transform:translateY(0.0px) rotateX(0.0deg);opacity:1.00"><div class="art"></div><div class="rowsb"><i></i><i></i><i></i><i></i></div></div>
+</div><figcaption>Scroll 100% · ticket 100% revealed</figcaption></figure></div>
+<h1 style="margin-top:40px">Mobile (390px)</h1>
+<div class="row"><figure><div class="frame m" style="width:260px;height:520px">
+<div class="bar"></div><div class="l" style="grid-template-columns:1fr"><div class="sm"></div><div class="xl" style="height:40px"></div><div class="list"><i></i><i></i><i></i><i></i></div><div class="cta"></div></div>
+<div class="r" style="position:relative;transform:none;opacity:1;margin:0 10px 10px;height:200px"><div class="art" style="height:70px"></div><div class="rowsb"><i></i><i></i><i></i></div></div>
+</div><figcaption>Mobile 390px · reveal ends at 100%</figcaption></figure></div>
+</body></html>
