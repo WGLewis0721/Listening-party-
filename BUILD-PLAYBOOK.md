@@ -60,7 +60,7 @@ How this site was built, in the order it was built, with the decisions, the tool
 
 ### Phase 2: Brand system (`design/BRAND-SYSTEM.md`, `design/brand-boards.html`)
 - **Frame (never changes) vs skin (changes per DJ).** The frame is why every month is the same quality; the skin is why each DJ feels unique.
-- Frame: five beats (Arrive, Sound, Set, Room, Ticket) over about 520vh; bottom scrubber; exactly one filled button on screen; fixed ticket anatomy; 12-column grid; labels in JetBrains Mono at 12px or more; Reduce Motion becomes a stacked static page.
+- Frame: five beats (Arrive, Sound, Set, Room, Ticket) over about 620vh of scroll on desktop (560vh on phones); bottom scrubber; exactly one filled button on screen; fixed ticket anatomy; 12-column grid; labels in JetBrains Mono at 12px or more; Reduce Motion becomes a stacked static page.
 - Skin: motif shader, display face, palette `bg surface ink muted acc acc2 accOn`, motion feel (a GSAP ease), voice (slot names), grain.
 - Guardrails every skin must pass: ink on void 7:1; muted 4.5:1; accent 4.5:1; on-accent 4.5:1; text over live art 4.5:1 (3:1 at 24px+); labels 12px+; tap targets 44px+.
 - Five skins: Quiet Spectra (Nova Vale, `spectra`, Instrument Serif), LED Stage (Halogen Ghost, `tunnel`, Big Shoulders Display), Golden Hour (Amani Sol, `sunburst`, Bodoni Moda italic), Chrome Disco (Chrome Vector, `mercury`, Unbounded), Brass and Night (Marlowe Brass, `spotlight`, Fraunces italic).

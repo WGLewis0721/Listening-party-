@@ -6,7 +6,7 @@ One **frame** that never changes, and one **skin** that changes for every DJ. Th
 
 | Part | Rule |
 | --- | --- |
-| Structure | One pinned hero, five beats: Arrive, Sound, Set, Room, Ticket, over about 520vh of scroll |
+| Structure | One pinned hero, five beats: Arrive, Sound, Set, Room, Ticket, over about 620vh of scroll on desktop (560vh on phones) |
 | Scrubber | A bottom bar: chapter ticks (also navigation) and a clock that runs from doors to close |
 | Primary action | Exactly one filled button on screen: the top bar's until the last beat, then the ticket's |
 | Ticket | Plate, head, overline, title, tagline, meta, lines, location, QR, perforation, foot, always in that order |
